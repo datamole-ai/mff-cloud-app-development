@@ -1,0 +1,6 @@
+{
+    "storageAccountName": "<your-storage-account-name>",
+    "transportsTableName":"transports",
+    "appInsightsName": "mff-iot-ai",
+    "functionAppName": "mff-iot-fa"
+}
