@@ -84,7 +84,7 @@ Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/t
 Clone the repository
 
 ```
-git clone https://gitlab.com/datamole/courses/mff-vyvoj-cloudovych-aplikaci
+git clone https://github.com/datamole-ai/mff-cloud-app-development
 ```
 
 **NOTE**: The root of the repository will be always referred to as `/`. Don't confuse it with root of file system.
