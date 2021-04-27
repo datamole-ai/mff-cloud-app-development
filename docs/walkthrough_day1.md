@@ -79,8 +79,6 @@ Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/t
 
 ## Steps
 
-**NOTE**: The following examples use a multi-platform command line [Powershell](https://github.com/PowerShell/PowerShell) commands. **Some may contain mixed slashes `\` and `/`.**
-
 ### Repository
 
 Clone the repository
@@ -104,7 +102,7 @@ See [arm template](/arm/resources.azrm.json). It contains
 - storage account - required to store the data and the azure function
 - app insights - monitoring for azure function 
 
-First thing is to create a new resource group. In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-<name>-<surname>").
+First thing is to create a new [resource group](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview#terminology). In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-<name>-<surname>").
 
 ```pswh
 az group create --location 'WestEurope' -n <resource-group>
@@ -114,12 +112,12 @@ Edit the `<your-storage-account-name>` in the `/arm/resources.azrm.parameters.js
 
 Then, deploy the infrastructure defined in `/arm/resources.azrm.json` with the following command.
 
-```pwsh
+```
 cd /
-az group deployment create \
+az deployment group create \
   --name "deploy-mff-task-components" \
   --resource-group <resource-group> \
-  --template-file "arm/resources.azrm.json" `
+  --template-file "arm/resources.azrm.json" \
   --parameters "arm/resources.azrm.parameters.json"
 ```
 
@@ -142,7 +140,7 @@ But now, we will test that the template itself works. Implementation will be hom
 
 Create Azure Function .net project in `sln` folder. ([docs here](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-csharp?tabs=azure-cli%2Cbrowser#create-a-local-function-project))
 
-```pwsh
+```
 cd /sln
 func init "AzureFunctions" --worker-runtime "dotnetIsolated"
 ```
@@ -221,7 +219,7 @@ Log output of each function can be read via Portal -> Function App `mff-iot-exam
 
 Open browser, type in `portal.azure.com` and login.
 
-Navigate to the app insights resource `mff-iot-example-ai`
+Navigate to the app insights resource.
 
 Click at "Server Requests" metrics on the right side of the page.
 
@@ -232,7 +230,7 @@ In production, App Insights are critical, you can create rules that fire alert a
 - Significant increase of BAD REQUEST responses after API upgrade -> it was not as backwards compatible as expected.
 - Some Internal Server Error -> reveals bugs
 
-<!-- Should we have more time, we can add some events here -->
+**CHALLENGE**: You can implement simple anomaly detection using AppInsights. Use [custom events](https://docs.microsoft.com/en-us/azure/azure-monitor/app/api-custom-events-metrics) and [alerts](https://docs.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-log) to get a notification if any request has timeSpentSec greater than 1000.
 
 ---
 The part below is the homework
@@ -401,3 +399,4 @@ Find the table under your subscription -> Storage Accounts -> `<your-storage-acc
 
 Check that all the records are there.
 
+Enjoy working transport data platform.

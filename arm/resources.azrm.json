@@ -5,8 +5,7 @@
         "storageAccountName": { "type": "string" },
         "transportsTableName": { "type": "string" },
         "appInsightsName": { "type": "string" },
-        "functionAppName": { "type": "string" },
-        "tags": { "type": "object" }
+        "functionAppName": { "type": "string" }
     },
     "variables": {
         "storageAccountTableService":"[concat(parameters('storageAccountName'), '/' ,'default')]",
@@ -19,7 +18,7 @@
             "name": "[parameters('storageAccountName')]",
             "kind": "StorageV2",
             "location": "[resourceGroup().location]",
-            "tags": "[parameters('tags')]",
+            "tags": {},
             "sku": {
                 "name": "Standard_LRS",
                 "tier": "Standard"
@@ -49,9 +48,7 @@
                             "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
                             "apiVersion": "2019-06-01",
                             "dependsOn": [
-                                // Microsoft.Storage/storageAccounts/mffjkiotstorage/tableServices/
-                                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccountName') , 'default')]"
-                                //"[resourceId('Microsoft.Storage/storageAccounts/tableServices', 'default')]"
+                                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccountName') , 'default')]"                                
                             ]
                         }
                     ]
@@ -65,7 +62,7 @@
             "type": "Microsoft.Insights/components",
             "kind": "web",
             "location": "[resourceGroup().location]",
-            "tags": "[parameters('tags')]",
+            "tags": {},
             "properties": {
                 "Application_Type": "web",
                 "ApplicationId": "[parameters('appInsightsName')]"
