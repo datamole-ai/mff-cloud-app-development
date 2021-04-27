@@ -1,14 +1,14 @@
 {
     "storageAccountName": {
-        "value": "myjktest202104271330"
+        "value": "<your-storage-account-name>"
     },
     "transportsTableName": {
         "value": "transports"
     },
     "appInsightsName": {
-        "value": "mff-jk-iot-ai"
+        "value": "<your-app-insights-name>"
     },
     "functionAppName": {
-        "value": "mff-jk-iot-fa"
+        "value": "<function-app-name>"
     }
 }

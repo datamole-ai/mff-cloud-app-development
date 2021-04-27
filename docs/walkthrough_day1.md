@@ -240,7 +240,9 @@ The part below is the homework
 cd `/sln/AzureFunction`
 
 For manipulating azure table, add package
-`dotnet add package WindowsAzure.Storage`
+```
+dotnet add package WindowsAzure.Storage
+```
 
 Create model of the HTTP Request 
 ```cs
