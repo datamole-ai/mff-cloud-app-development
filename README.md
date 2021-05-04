@@ -36,7 +36,23 @@ For more details visit [this document](./docs/walkthrough_day1.md)
 
 ## Practicals 2 - Use Case
 
-TBA
+The situation has changed in the following way: 
+- The business is thriving and the number of smart warehouses is about to increase from one to a hundred.
+- The client request a simple anomaly detection tool.
+
+The architecture would need to adjust at multiple levels
+
+### API
+
+The clients need to send an id of the warehouse they belong to and our Event Collector, Reporter and transports table need to be adjusted. 
+
+### Reporting
+
+We can expect increase demand of requests not only for the separate warehouse but even for the same warehouse (more people need the same data). The Report endpoint can no longer calculate the statistics on-the-fly, it should either precompute them or cache them in some storage.
+
+### Anomaly Detection
+
+This feature is developed by a different team but we need to integrate with them.
 
 ## Practicals 3 - Use Case
 

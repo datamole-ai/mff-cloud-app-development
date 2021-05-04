@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace AzureFunctions.Models
 {
-    public class Transport
+    public class TransportEvent
     {
         [JsonPropertyName("locationFrom")]
         public string LocationFrom { get; set; } = null!;
@@ -21,6 +21,6 @@ namespace AzureFunctions.Models
         public string WarehouseId { get; set; } = null!;
 
         [JsonPropertyName("transportedDateTime")]
-        public DateTimeOffset TranportedDateTime { get; set; }
+        public string TranportedDateTime { get; set; }
     }
 }

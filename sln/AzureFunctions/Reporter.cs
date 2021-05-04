@@ -13,15 +13,16 @@ namespace AzureFunctions
 {
     public class Reporter
     {
-        private readonly AggregationService _aggregationService;
+        private readonly ReportRepository _reportRepository;
         private readonly ILogger<Reporter> _logger;
-        private const string _keyParamName = "day";
+        private const string _dayParamName = "day";
+        private const string _warehouseParamName = "warehouse";
 
         public Reporter(
-            AggregationService aggregationService,
+            ReportRepository reportRepository,
             ILogger<Reporter> logger)
         {
-            _aggregationService = aggregationService ?? throw new ArgumentNullException(nameof(aggregationService));
+            _reportRepository = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         [Function("Reporter")]
@@ -36,10 +37,10 @@ namespace AzureFunctions
             }
 
             var queryParams = HttpUtility.ParseQueryString(req.Url.Query);
-            var days = queryParams.GetValues(_keyParamName);
+            var days = queryParams.GetValues(_dayParamName);
             if (days is null || days.Length != 1)
             {
-                _logger.LogError("Expected number of {dayName} is 1", _keyParamName);
+                _logger.LogError("Expected number of {dayName} is 1", _dayParamName);
                 return req.CreateResponse(HttpStatusCode.BadRequest);
             }
 
@@ -54,18 +55,35 @@ namespace AzureFunctions
                 return req.CreateResponse(HttpStatusCode.BadRequest);
             }
 
-
-            var statistics = await _aggregationService.AggregateStatisticsForDayAsync(day);
-
-            if (statistics is null)
+            var warehouses = queryParams.GetValues(_warehouseParamName);
+            if (warehouses is null || warehouses.Length != 1)
             {
-                return req.CreateResponse(HttpStatusCode.NoContent);
+                _logger.LogError("Expected number of {warehouseName} is 1", _warehouseParamName);
+                return req.CreateResponse(HttpStatusCode.BadRequest);
             }
-            else
+            var warehouse = warehouses[0];
+
+            _logger.LogInformation("Querying report for Day {day} and Warehouse: {warehouse}",
+                day.ToString("s"),
+                warehouse);
+            try
             {
-                var response = req.CreateResponse(HttpStatusCode.OK);
-                await response.WriteAsJsonAsync(statistics);
-                return response;
+                var stats = await _reportRepository.GetWarehouseDayStatisticsAsync(warehouse, day);
+                if (stats is null)
+                {
+                    return req.CreateResponse(HttpStatusCode.NoContent);
+                }
+                else
+                {
+                    var response = req.CreateResponse(HttpStatusCode.OK);
+                    await response.WriteAsJsonAsync(stats);
+                    return response;
+                }
+            }
+            catch (InvalidOperationException ioe)
+            {
+                _logger.LogError("Error while fetching the statistics. Error {error}", ioe);
+                return req.CreateResponse(HttpStatusCode.BadRequest);
             }
         }
     }

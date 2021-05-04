@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AzureFunctions.Models;
-
+using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
 
 namespace EventGenerator
 {
@@ -15,8 +14,8 @@ namespace EventGenerator
     {
         static async Task Main(string[] args)
         {
-            using var httpClient = new HttpClient();
-            var uri = args[0];
+            var connectionString = args[0];
+            var eventHubName = "client-events";
 
             int wareshouseNumber = 10;
             var sectionNumber = 5;
@@ -33,20 +32,22 @@ namespace EventGenerator
 
             var transports = GetTransports(warehouses, sections);
 
+            await using var producerClient = new EventHubProducerClient(connectionString, eventHubName);
+            EventDataBatch eventBatch = await producerClient.CreateBatchAsync();
             foreach (var transport in transports)
             {
                 var json = JsonSerializer.Serialize(transport);
-                Console.WriteLine($"Sending {json}");
-                var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var request = new HttpRequestMessage(HttpMethod.Post, uri)
+                
+                if (!eventBatch.TryAdd(new EventData(Encoding.UTF8.GetBytes(json))))
                 {
-                    Content = stringContent
-                };
-                var response = await httpClient.SendAsync(request);
+                    await producerClient.SendAsync(eventBatch);
+                    eventBatch = await producerClient.CreateBatchAsync();
+                    Console.WriteLine("Sending batch");
+                }
 
-                Console.WriteLine(response.StatusCode);
             }
+
+            eventBatch.Dispose();
         }
 
         static IEnumerable<Transport> GetTransports(IList<string> warehouses, IList<string> sections)
@@ -66,6 +67,7 @@ namespace EventGenerator
                         TimeSpentSeconds = secondsRandom.Next(0, 100),
                         ObjectId = objectId,
                         TranportedDateTime = DateTimeOffset.Now,
+                        WarehouseId = warehouseId
                     };
                 }
             }

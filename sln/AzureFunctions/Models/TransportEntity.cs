@@ -14,24 +14,27 @@ namespace AzureFunctions.Models
 
         public TransportEntity(
             string transportId,
+            string warehouseId,
             string objectId,
             DateTimeOffset transportedDateTimeOffset,
             double timeSpentSeconds,
             string locationFrom,
             string locationTo
             ) :
-            base(transportedDateTimeOffset.ToString(PartitionKeyFormat), transportId)
+            base(transportedDateTimeOffset.ToString("yyyyMMdd"), warehouseId + ":" + transportId)
         {
             TransportedDateTime = transportedDateTimeOffset.ToString("o");
+
+            TransportId = transportId;
+            WarehouseId = warehouseId;
             ObjectId = objectId;
             TimeSpentSeconds = timeSpentSeconds;
             LocationFrom = locationFrom;
             LocationTo = locationTo;
         }
 
-
-        [IgnoreProperty]
-        public string TransportId => RowKey;
+        public string TransportId { get; set; } = null!;
+        public string WarehouseId { get; set; } = null!;
         public string ObjectId { get; set; } = null!;
         public double TimeSpentSeconds { get; set; }
         public string LocationFrom { get; set; } = null!;
@@ -54,6 +57,7 @@ namespace AzureFunctions.Models
 
             return new TransportEntity(
                 transportId,
+                transport.WarehouseId,
                 transport.ObjectId,
                 transport.TranportedDateTime,
                 transport.TimeSpentSeconds!.Value,
@@ -71,6 +75,7 @@ namespace AzureFunctions.Models
 
             return new Transport
             {
+                WarehouseId = entity.WarehouseId,
                 ObjectId = entity.ObjectId,
                 TranportedDateTime = entity.TransportedDateTimeOffset,
                 TimeSpentSeconds = entity.TimeSpentSeconds,

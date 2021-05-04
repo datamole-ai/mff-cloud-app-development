@@ -1,14 +1,20 @@
 {
     "storageAccountName": {
-        "value": "<your-storage-account-name>"
+        "value": "myjktest202104271644"
     },
     "transportsTableName": {
         "value": "transports"
     },
     "appInsightsName": {
-        "value": "<your-app-insights-name>"
+        "value": "mff-jk-iot-ai-202104271644"
     },
     "functionAppName": {
-        "value": "<function-app-name>"
+        "value": "mff-jk-iot-fa-202104271644"
+    },
+    "cachedReportsContainerName": {
+        "value": "cachedreports"
+    },
+    "eventHubNamespaceName": {
+        "value": "mff-jk-iot-ehn-202104271644"
     }
 }

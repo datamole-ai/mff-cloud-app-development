@@ -7,6 +7,7 @@ using AzureFunctions.Models;
 using System;
 using AzureFunctions.Services;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace AzureFunctions
 {
@@ -47,7 +48,7 @@ namespace AzureFunctions
                     _logger.LogError("empty body");
                     return req.CreateResponse(HttpStatusCode.BadRequest);
                 }
-                record = (await req.ReadFromJsonAsync<Transport>())!;
+                record = JsonSerializer.Deserialize<Transport>(str)!;
             }
             catch (AggregateException e) when (e.InnerExceptions[0] is JsonException)
             {
@@ -72,6 +73,8 @@ namespace AzureFunctions
             || string.IsNullOrEmpty(record.LocationFrom)
             || string.IsNullOrEmpty(record.LocationTo)
             || string.IsNullOrEmpty(record.ObjectId)
+            || string.IsNullOrEmpty(record.WarehouseId)
+            || !Regex.IsMatch(record.WarehouseId, "[A-Za-z0-9-_]{12,64}")
             || !record.TimeSpentSeconds.HasValue;
     }
 }
