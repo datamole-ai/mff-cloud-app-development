@@ -62,6 +62,6 @@ TBA
 
 * [Assignment](./docs/assignment.md)
 * https://docs.microsoft.com/en-us/azure/architecture/patterns/
-* https://www.nejlevnejsi-knihy.cz/kniha/designing-data-intensive-applications.html?utm_source=google&utm_medium=surfaces&utm_campaign=shopping%20feed&utm_content=free%20google%20shopping%20clicks%20feed&gclid=EAIaIQobChMI0JbYrfXB8AIVCM13Ch0SEw5DEAQYASABEgJUivD_BwE
+* https://www.nejlevnejsi-knihy.cz/kniha/designing-data-intensive-applications.html
 
 
