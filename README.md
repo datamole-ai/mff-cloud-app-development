@@ -50,7 +50,7 @@ Check that it works by typing
 
 The situation is as follows. The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
 
-For more details visit [this document](./docs/walkthrough_day1.md)
+For more details visit [this document](./docs/walkthrough_day1.md).
 
 ## Practicals 2 - Use Case (05. 05. 2021)
 
@@ -60,7 +60,7 @@ The situation has changed in the following way:
 
 The architecture would need to adjust at multiple levels.
 
-For more details visit [this document](./docs/walkthrough_day2.md)
+For more details visit [this document](./docs/walkthrough_day2.md).
 
 ### API
 
