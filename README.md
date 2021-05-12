@@ -24,17 +24,37 @@ Check that it works by typing
 
 <!-- az account set --subscription <subscriptionId> -->
 
+# Recommended resources
+
+* [Cloud Architecture Patterns](https://docs.microsoft.com/en-us/azure/architecture/patterns/)
+* Kleppmann, M. (2017). **Designing Data-Intensive Applications**. O'Reilly Media, Inc. ISBN: 978-1-4493-7332-0 
+* Azure Storage Documentation
+  * [Blobs](https://azure.microsoft.com/en-us/services/storage/blobs/)
+  * [Tables - Design](https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-guidelines)
+  * [Tables - Patterns](https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-patterns)
+  * [Tables - Query](https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-for-query)
+  * [Tables - Writes/Updates](https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-for-modification)
+  * [Tables - Modelling](https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-modeling)
+* Azure Event Hubs Documentation
+  * [Terminology](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-features)
+  * [Scaling](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-scalability)
+  * [Availability/Consistency](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-availability-and-consistency?tabs=dotnet)
+
+# Semestral projects
+
+* * [Assignment](./docs/assignment.md)
+
 # Internet of Things
 
 It's a network of interconnected devices and services that together collect, store and process data. The devices are usually some sensors sending events or measurements -> single purpose and simple.
 
-## Practicals 1 - Use Case
+## Practicals 1 - Use Case (28. 04. 2021)
 
 The situation is as follows. The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
 
 For more details visit [this document](./docs/walkthrough_day1.md)
 
-## Practicals 2 - Use Case
+## Practicals 2 - Use Case (05. 05. 2021)
 
 The situation has changed in the following way: 
 - The business is thriving and the number of smart warehouses is about to increase from one to a hundred.
@@ -54,14 +74,6 @@ We can expect increase demand of requests not only for the separate warehouse bu
 
 This feature is developed by a different team but we need to integrate with them.
 
-## Practicals 3 - Use Case
+## Practicals 3 - Use Case (11. 05. 2021)
 
 TBA
-
-# References
-
-* [Assignment](./docs/assignment.md)
-* https://docs.microsoft.com/en-us/azure/architecture/patterns/
-* https://www.nejlevnejsi-knihy.cz/kniha/designing-data-intensive-applications.html
-
-
