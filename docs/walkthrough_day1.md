@@ -1,13 +1,10 @@
 Walkthrough - Practicals 1
----
 
-**Parts of this document are out of date due to the upgrade. See the `walkthrough_day2` for more details.
+# Specifics of cloud development for Internet of Things
 
----
+* Explained during the lecture.
 
-
-
-# Problem
+# Case study problem statement
 
 The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. We will start simple.
 
