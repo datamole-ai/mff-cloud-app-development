@@ -43,7 +43,7 @@ Check that it works by typing
   * [Scaling](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-scalability)
   * [Availability/Consistency](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-availability-and-consistency?tabs=dotnet)
 
-# Semestral projects
+# Semestral project
 
 * [Assignment](./docs/assignment.md)
 
@@ -67,4 +67,4 @@ For more details visit [this document](./docs/walkthrough_day2.md).
 
 ## Practicals 3 - Use Case (11. 05. 2021)
 
-TBA
+Semestral project example solution. The diagrams will be published after the semester is finished.
