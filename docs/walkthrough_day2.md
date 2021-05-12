@@ -1,11 +1,6 @@
 Walkthrough - Practicals 2
 
 
-Nekam musim dat ty patterny
-https://docs.microsoft.com/en-us/azure/architecture/patterns/
-
-
----
 # Problem
 
 The situation has changed in the following way: 

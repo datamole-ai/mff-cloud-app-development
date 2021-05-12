@@ -1,4 +1,4 @@
-MFF - NSWI 152 - Cloud Application Development - IoT Solution
+MFF - NSWI 152 - Cloud Application Development - Solutions for IoT
 ---
 
 Web: https://www.ksi.mff.cuni.cz/teaching/nswi152-web/
@@ -42,11 +42,9 @@ Check that it works by typing
 
 # Semestral projects
 
-* * [Assignment](./docs/assignment.md)
+* [Assignment](./docs/assignment.md)
 
-# Internet of Things
-
-It's a network of interconnected devices and services that together collect, store and process data. The devices are usually some sensors sending events or measurements -> single purpose and simple.
+# Contents
 
 ## Practicals 1 - Use Case (28. 04. 2021)
 
