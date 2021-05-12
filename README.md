@@ -3,11 +3,14 @@ MFF - NSWI 152 - Cloud Application Development - Solutions for IoT
 
 Web: https://www.ksi.mff.cuni.cz/teaching/nswi152-web/
 
-# Requirements 
+# Prerequisites 
 
 - Basic Azure resources knowledge
-- Azure account
 - C# basics
+
+## Tooling
+
+- Azure account
 - .NET 5 SDK
 - Tools:
   - [Azure Function Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#v2)
