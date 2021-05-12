@@ -62,18 +62,6 @@ The architecture would need to adjust at multiple levels.
 
 For more details visit [this document](./docs/walkthrough_day2.md).
 
-### API
-
-The clients need to send an id of the warehouse they belong to and our Event Collector, Reporter and transports table need to be adjusted. 
-
-### Reporting
-
-We can expect increase demand of requests not only for the separate warehouse but even for the same warehouse (more people need the same data). The Report endpoint can no longer calculate the statistics on-the-fly, it should either precompute them or cache them in some storage.
-
-### Anomaly Detection
-
-This feature is developed by a different team but we need to integrate with them.
-
 ## Practicals 3 - Use Case (11. 05. 2021)
 
 TBA
