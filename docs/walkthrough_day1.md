@@ -10,6 +10,26 @@ The client has one warehouse in which objects are moved from one location to ano
 
 # Design
 
+```mermaid
+flowchart LR
+  device[Client Device]
+  reportingApp[Reporting Frontend]
+  subgraph platform[Transportation Platform]
+    subgraph api[API]
+      reportingApi[Reporting]
+      ingressApi[Ingress]
+    end
+    subgraph storage[Storage]
+      rawRecordTable[Raw Records Table]
+    end
+  end  
+  ingressApi -- Store records --> rawRecordTable
+  reportingApi -- Query records --> rawRecordTable
+  reportingApp -- Query daily statistics --> reportingApi
+  device -- Generate events --> ingressApi
+  
+```
+
 ![Design](./imgs/diagram_1.png)
 
 ## Components
