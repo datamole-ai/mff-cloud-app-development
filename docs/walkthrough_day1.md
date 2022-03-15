@@ -1,14 +1,25 @@
-Walkthrough - Practicals 1
+# Lecture 1
 
-# Specifics of cloud development for Internet of Things
+## Overview of relevant Azure resources
 
-* Explained during the lecture.
+* Azure Storage (Blobs, Tables)
+* Event Hub
+* Azure Functions (HTTP Trigger + Event Hub Trigger)
+* Application Insights
 
-# Case study problem statement
+## Specifics of cloud development for Internet of Things
+
+TODO Tom P.
+
+## Case study problem statement
+
+TODO Máša
 
 The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. We will start simple.
 
-# Design
+### Ideas ?
+
+### Resulting design
 
 ```mermaid
 flowchart LR
@@ -91,6 +102,7 @@ Response Body:
 
 # Implementation
 
+TODO Michal
 
 Using Azure
 
