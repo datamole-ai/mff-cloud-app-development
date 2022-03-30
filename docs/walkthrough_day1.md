@@ -66,7 +66,7 @@ Request Body:
   "transportedDateTime":<string>,
   "locationFrom":<string>,
   "locationTo":<string>,
-  "timeSpentSec":<number>,
+  "transportDurationSec":<number>,
 }
 ```
 
@@ -96,7 +96,7 @@ Response Body:
 {
   "day":<timestamp>,
   "totalTransported":<number>,
-  "avgTimeOfTransportation":<number>,
+  "avgDurationOfTransportation":<number>,
 }
 ```
 
@@ -222,7 +222,7 @@ Powershell
 $body = @{
   locationFrom="a";
   locationTo="b";
-  timeSpentSec=1;
+  transportDurationSec=1;
   objectId="1";
   transportedDateTime="2021-04-03T12:34:56"
 } | ConvertTo-Json
@@ -234,7 +234,7 @@ cURL
 
 ```sh
 curl -X POST -H "Content-Type: application/json" \
-    -d '{"locationFrom": "a", "locationTo":"b", "timeSpentSec":1, "objectId":"1", "transportedDateTime": "2021-04-03T12:34:56"}' \
+    -d '{"locationFrom": "a", "locationTo":"b", "transportDurationSec":1, "objectId":"1", "transportedDateTime": "2021-04-03T12:34:56"}' \
     <URI>
 ```
 
@@ -295,8 +295,8 @@ public class Transport
   [JsonPropertyName("locationTo")]
   public string LocationTo { get; set; }
 
-  [JsonPropertyName("timeSpentSec")]
-  public double? TimeSpentSeconds { get; set; }
+  [JsonPropertyName("transportDurationSec")]
+  public double? TransportDurationSec { get; set; }
 }
 ```
 Parse the incoming request in the `/sln/AzureFunctions/EventConsumer.cs` file created by the azure function template.
@@ -335,7 +335,7 @@ public class TransportEntity : TableEntity
       string transportId,
       string objectId,
       DateTimeOffset transportedDateTimeOffset,
-      double timeSpentSeconds,
+      double transportDurationSec,
       string locationFrom,
       string locationTo
       ) :
@@ -343,7 +343,7 @@ public class TransportEntity : TableEntity
   {
       TransportedDateTime = transportedDateTimeOffset.ToString("o");
       ObjectId = objectId;
-      TimeSpentSeconds = timeSpentSeconds;
+      TransportDurationSec = transportDurationSec;
       LocationFrom = locationFrom;
       LocationTo = locationTo;
   }
