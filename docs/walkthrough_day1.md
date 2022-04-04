@@ -121,7 +121,7 @@ Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/t
 Clone the repository
 
 ```
-git clone https://gitlab.com/datamole/courses/mff-vyvoj-cloudovych-aplikaci
+git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 ```
 
 **NOTE**: The root of the repository will be always referred to as `/`. Don't confuse it with root of file system.
@@ -145,17 +145,17 @@ First thing is to create a new resource group. In the following command, replace
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Edit the `<your-storage-account-name>` in the `/arm/resources.azrm.parameters.json`.
+Edit the `storageAccountName` value in the `/arm/resources.azrm.parameters.json`.
 
 Then, deploy the infrastructure defined in `/arm/resources.azrm.json` with the following command.
 
 ```pwsh
-cd /
-az group deployment create \
+cd arm
+az deployment group create \
   --name "deploy-mff-task-components" \
   --resource-group <resource-group> \
-  --template-file "arm/resources.azrm.json" `
-  --parameters "arm/resources.azrm.parameters.json"
+  --template-file "resources.azrm.json" `
+  --parameters "resources.azrm.parameters.json"
 ```
 
 After it's created, you will see the following lines in the output
@@ -174,6 +174,8 @@ Error: Code=InvalidTemplateDeployment; Message=The template deployment 'deploy-m
 But now, we will test that the template itself works. Implementation will be homework.
 
 ## Create Azure Functions from a template
+
+[Install](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools) Azure Functions Core Tools.
 
 Create Azure Function .net project in `sln` folder. ([docs here](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-csharp?tabs=azure-cli%2Cbrowser#create-a-local-function-project))
 

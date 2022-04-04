@@ -1,20 +1,20 @@
 {
     "storageAccountName": {
-        "value": "myjktest202104271644"
+        "value": "mytest202204041315"
     },
     "transportsTableName": {
         "value": "transports"
     },
     "appInsightsName": {
-        "value": "mff-jk-iot-ai-202104271644"
+        "value": "mff-test-iot-ai-202204041315"
     },
     "functionAppName": {
-        "value": "mff-jk-iot-fa-202104271644"
+        "value": "mff-test-iot-fa-202204041315"
     },
     "cachedReportsContainerName": {
         "value": "cachedreports"
     },
     "eventHubNamespaceName": {
-        "value": "mff-jk-iot-ehn-202104271644"
+        "value": "mff-test-iot-ehn-202204041315"
     }
 }
