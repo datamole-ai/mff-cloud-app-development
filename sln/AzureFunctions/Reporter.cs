@@ -26,8 +26,7 @@ namespace AzureFunctions
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         [Function("Reporter")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req,
-            FunctionContext executionContext)
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
         {
             var query = req.Url.Query;
             if (string.IsNullOrEmpty(query))

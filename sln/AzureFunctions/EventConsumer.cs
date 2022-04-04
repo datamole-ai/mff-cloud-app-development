@@ -36,8 +36,7 @@ namespace AzureFunctions
 
         [Function("EventConsumer")]
         public async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
-            FunctionContext executionContext)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequestData req)
         {
             Transport record;
             try
@@ -75,6 +74,6 @@ namespace AzureFunctions
             || string.IsNullOrEmpty(record.ObjectId)
             || string.IsNullOrEmpty(record.WarehouseId)
             || !Regex.IsMatch(record.WarehouseId, "[A-Za-z0-9-_]{12,64}")
-            || !record.TimeSpentSeconds.HasValue;
+            || !record.TransportDurationSec.HasValue;
     }
 }

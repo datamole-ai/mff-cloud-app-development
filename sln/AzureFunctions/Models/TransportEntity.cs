@@ -60,7 +60,7 @@ namespace AzureFunctions.Models
                 transport.WarehouseId,
                 transport.ObjectId,
                 transport.TranportedDateTime,
-                transport.TimeSpentSeconds!.Value,
+                transport.TransportDurationSec!.Value,
                 transport.LocationFrom,
                 transport.LocationTo
             );
@@ -78,7 +78,7 @@ namespace AzureFunctions.Models
                 WarehouseId = entity.WarehouseId,
                 ObjectId = entity.ObjectId,
                 TranportedDateTime = entity.TransportedDateTimeOffset,
-                TimeSpentSeconds = entity.TimeSpentSeconds,
+                TransportDurationSec = entity.TimeSpentSeconds,
                 LocationFrom = entity.LocationFrom,
                 LocationTo = entity.LocationTo
             };
