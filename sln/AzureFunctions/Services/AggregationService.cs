@@ -60,7 +60,7 @@ namespace AzureFunctions.Services
                 }
                 else
                 {
-                    currentWarehouse.SumTime += item.TimeSpentSeconds!.Value;
+                    currentWarehouse.SumTime += item.TransportDurationSec!.Value;
                     currentWarehouse.TotalTransported++;
                 }
             }

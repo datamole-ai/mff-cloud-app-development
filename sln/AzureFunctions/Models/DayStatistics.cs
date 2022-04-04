@@ -12,7 +12,7 @@ namespace AzureFunctions.Models
         {
             Day = day;
             TotalTransported = totalTransported;
-            AverageTimeOfTransportation = averageTimeOfTransportation;
+            AvgDurationOfTransportation = averageTimeOfTransportation;
         }
         public DayStatistics()
         {
@@ -24,7 +24,7 @@ namespace AzureFunctions.Models
         [JsonPropertyName("totalTransported")]
         public int TotalTransported { get; set; }
 
-        [JsonPropertyName("avgTimeOfTransportation")]
-        public double AverageTimeOfTransportation { get; set; }
+        [JsonPropertyName("avgDurationOfTransportation")]
+        public double AvgDurationOfTransportation { get; set; }
     }
 }

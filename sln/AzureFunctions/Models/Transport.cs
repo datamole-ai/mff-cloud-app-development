@@ -11,8 +11,8 @@ namespace AzureFunctions.Models
         [JsonPropertyName("locationTo")]
         public string LocationTo { get; set; } = null!;
 
-        [JsonPropertyName("timeSpentSec")]
-        public double? TimeSpentSeconds { get; set; }
+        [JsonPropertyName("transportDurationSec")]
+        public double? TransportDurationSec { get; set; }
 
         [JsonPropertyName("objectId")]
         public string ObjectId { get; set; } = null!;
