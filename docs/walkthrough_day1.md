@@ -192,6 +192,17 @@ func new --name "Reporter" --template "HTTP trigger" --authlevel "function"
 func new --name "EventConsumer" --template "HTTP trigger" --authlevel "function"
 ```
 
+When prompted, choose `dotnet` runtime.
+
+After running those commands, change the Azure functions version value in .csproj file from:
+```
+<AzureFunctionsVersion>v3</AzureFunctionsVersion>
+```
+to
+```
+<AzureFunctionsVersion>v4</AzureFunctionsVersion>
+```
+
 ## Publish Azure Functions
 
 ```pwsh
