@@ -34,7 +34,7 @@
 * Capacity of the system can be adjusted/scaled to current demand.
 * The scaling is very flexible and can be even on the less-than-hourly basis.
 
-### Many point of views
+### Many point of views on IoT solutions
 
 #### Hardware + Embedded Software
 
