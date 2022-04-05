@@ -49,15 +49,16 @@ Request Body:
 
 ```json
 {
-  "objectId":<string>,
-  "transportedDateTime":<string>,
-  "locationFrom":<string>,
-  "locationTo":<string>,
-  "transportDurationSec":<number>,
+  "objectId": "electronics-box-1",
+  "transportedDateTime": "2022-04-05T15:01:02Z",
+  "locationFrom": "rack-25",
+  "locationTo": "rack-35",
+  "transportDurationSec": 31
 }
 ```
 
 Response Code:
+
 - `202 Accepted` - Event was successfully stored.
 - `400 Bad Request` - Body is not in the correct form.
 
@@ -68,7 +69,7 @@ Response Body: None
 Request Method: `GET`
 
 Request Query Parameters: 
-- `day`- a day for which the statistics are calculated in form of `yyyyMMdd`
+- `day`- a day for which the statistics are calculated in form of `yyyy-MM-dd`
 
 Request Body: None
 
@@ -81,23 +82,18 @@ Response Body:
 
 ```json
 {
-  "day":<timestamp>,
-  "totalTransported":<number>,
-  "avgDurationOfTransportation":<number>,
+  "day": "2022-04-05",
+  "totalTransported": 42,
+  "avgDurationOfTransportationSec": 40.2,
 }
 ```
 
 # Implementation
 
-TODO Michal
+* HTTP API - [Azure functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
+* Storage - [Azure table](https://docs.microsoft.com/en-us/azure/storage/tables/)
 
-Using Azure
-
-- HTTP - [Azure functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
-- Storage - [Azure table](https://docs.microsoft.com/en-us/azure/storage/tables/)
-
-Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/templates/) templates (see `arm` folder).
-
+Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/templates/) templates. See [arm/lesson-1](/arm/lesson-1) folder.
 
 ## Steps
 
@@ -121,7 +117,7 @@ It has the following directories
 
 Navigate to the `/arm` directory
 
-See [arm template](/arm/resources.azrm.json). It contains
+See [arm template](/arm/lesson-1/resources.azrm.json). It contains
 - function app - Azure function resource
 - storage account - required to store the data and the azure function
 - app insights - monitoring for azure function 
