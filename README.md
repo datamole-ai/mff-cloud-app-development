@@ -1,10 +1,10 @@
 # MFF/NSWI152 - Cloud Application Development - IoT
 
-There will be 3 lessons in total. During the first 2 lessons, specifics of IoT cloud solutions will be discussed and end-to-end system design for an example IoT use-case will be presented in an incremental way. In the end of the 2nd lesson, the assignment for the semestral project will be presented. 
+There will be 3 lessons in total. During the first 2 lessons, specifics of IoT cloud solutions will be discussed and end-to-end system design for an example IoT case study will be presented in an incremental way. In the end of the 2nd lesson, the assignment for the semestral project will be presented. 
 
 # Semestral project
 
-The assignment will require students to prepare a system design for a simple IoT use case. Students are expected to deliver the solution for the assignment in form of text documents and diagrams.
+The assignment will require students to prepare a system design for a simple IoT case study. Students are expected to deliver the solution for the assignment in form of text documents and diagrams.
 
 The documents and diagrams representing the solution should be stored in **private GitHub repository** and pushed to the branch `feature/solution`. After that following actions are required:
 
@@ -23,12 +23,12 @@ Formal assignment can be found in the [semestral-project-assignment.md](./semest
 
 * **Lesson 1** (12. 04. 2022)
   * Specifics of cloud development for IoT
-  * Example IoT use case (basic solution)
+  * Example IoT case study (basic solution)
   * Homework I. 
   * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
 
 * **Lesson 2** (19. 04. 2022)
-  * Example IoT use case (advanced solution)
+  * Example IoT case study (advanced solution)
   * Homework II.
   * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
 
