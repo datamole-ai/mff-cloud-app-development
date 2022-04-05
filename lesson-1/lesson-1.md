@@ -10,9 +10,72 @@
 * [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview/)
 * [Azure Resource Manager (ARM) Templates](https://docs.microsoft.com/en-us/azure/templates/)
 
-## Specifics of cloud development for Internet of Things
+## Cloud-based development of IoT solutions
 
-TODO Tom P.
+### Benefits cloud compared to on-premises solutions
+
+#### Prototyping & Incremental development
+
+* New ideas can be tested immediately without up-front investments and delays.
+* Infrastructure for the applications can be added just-in-time.
+
+#### System architecture changes
+
+* Cost of provisioning new infrastructure does not have to be considered.
+* ROI of existing infrastructure does not have to be considered.
+
+#### Cost management
+
+* Infrastructure over-provisioning can be avoided with pay-as-you-go pricing.
+* For predictable workloads, cost can be optimized with capacity reservations.
+
+#### System load changes
+
+* Capacity of the system can be adjusted/scaled to current demand.
+* The scaling is very flexible and can be even on the less-than-hourly basis.
+
+### Many point of views
+
+#### Hardware + Embedded Software
+
+* Performance.
+* Reliability.
+* Power usage.
+* Real-time.
+
+#### Integration
+
+* Deployment of devices into field
+* Networking.
+* Security.
+* Updates.
+
+#### Cloud/Backend
+
+* (Stateful) connection of many devices.
+* Storing of data.
+* Processing of data.
+* Cloud-to-device communication.
+
+### Cloud services for IoT solutions
+
+* Unbalanced load in time - autoscaling.
+* IoT devices are frequently geodistributed.
+    * Network reliability and latency challenges.
+    * Might lead to geodistributed system architecture.
+* In-order processing of data from a single device.
+    * Sequential.
+    * Not trivial to achieve in distributed systems.
+        * Retries, failovers.
+        * Tradeoff with high-availability.
+    * Performance sensitive - throughput vs latency.
+        * Batching
+* Parallel processing of data from multiple devices.
+* Extremely unreliable clocks on devices.
+* Huge amounts of relatively low-value transactions compared to typical business applications.
+    * Logging/tracing every single transaction (e.g. collecting one sensor reading) is not feasible.
+        * Designing logging/tracing strategy is complex.
+        * Debugging is harder.
 
 ## Case study problem statement
 
