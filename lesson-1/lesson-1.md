@@ -233,8 +233,6 @@ Log output of each function can be read via Portal -> Function App `mff-iot-exam
 
 ## Check App Insights
 
-Open browser, type in `portal.azure.com` and login.
-
 Navigate to the app insights resource `mff-iot-example-ai`
 
 Click at "Server Requests" metrics on the right side of the page.
@@ -247,6 +245,8 @@ In production, App Insights are critical, you can create rules that fire alert a
 - Some Internal Server Error -> reveals bugs
 
 ## Homework - Implement the HTTP API functions
+
+TODO: Michal Z.
 
 For manipulating azure table, add package
 `dotnet add package WindowsAzure.Storage`
