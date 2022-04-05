@@ -1,6 +1,4 @@
 using System.Net;
-using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using AzureFunctions.Models;
@@ -8,6 +6,11 @@ using System;
 using AzureFunctions.Services;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AzureFunctions
 {
@@ -34,9 +37,9 @@ namespace AzureFunctions
             _logger = logger;
         }
 
-        [Function("EventConsumer")]
-        public async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequestData req)
+        [FunctionName("EventConsumer")]
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             Transport record;
             try
@@ -45,26 +48,27 @@ namespace AzureFunctions
                 if (string.IsNullOrEmpty(str))
                 {
                     _logger.LogError("empty body");
-                    return req.CreateResponse(HttpStatusCode.BadRequest);
+
+                    return new BadRequestResult();
                 }
                 record = JsonSerializer.Deserialize<Transport>(str)!;
             }
             catch (AggregateException e) when (e.InnerExceptions[0] is JsonException)
             {
                 _logger.LogError("Invalid request body: {error}", e.InnerExceptions[0].Message);
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestResult();
             }
 
             if (ValidateRecord(record))
             {
                 _logger.LogError("Invalid record properties");
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestResult();
             }
 
             await _transportRepository.StoreAsync(record);
 
             _logger.LogInformation("Request successfully processed");
-            return req.CreateResponse(HttpStatusCode.Accepted);
+            return new AcceptedResult();
         }
 
         private static bool ValidateRecord(Transport record) =>
