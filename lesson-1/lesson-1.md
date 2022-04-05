@@ -3,7 +3,7 @@
 ## Overview of relevant Azure resources
 
 * Azure Storage (Blobs, Tables)
-* Azure Functions (HTTP Trigger + Event Hub Trigger)
+* Azure Functions (HTTP Trigger)
 * Application Insights
 
 ## Specifics of cloud development for Internet of Things

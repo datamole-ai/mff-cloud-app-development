@@ -3,6 +3,7 @@
 ## Overview of relevant Azure resources
 
 * Azure Event Hubs
+* Azure Functions (Event Hub Trigger)
 
 # Problem
 
