@@ -118,10 +118,10 @@ az group create --location 'WestEurope' -n <resource-group>
 
 Edit the `storageAccountName` value in the `lesson-1/arm/resources.azrm.parameters.json`.
 
-Then, deploy the infrastructure defined in `lesson-1/armresources.azrm.json` with the following command.
+Then, deploy the infrastructure defined in `lesson-1/arm/resources.azrm.json` with the following command.
 
 ```pwsh
-cd arm
+cd lesson-1/arm
 az deployment group create \
   --name "deploy-mff-task-components" \
   --resource-group <resource-group> \
