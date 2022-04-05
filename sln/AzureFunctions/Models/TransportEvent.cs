@@ -21,6 +21,6 @@ namespace AzureFunctions.Models
         public string WarehouseId { get; set; } = null!;
 
         [JsonPropertyName("transportedDateTime")]
-        public string TranportedDateTime { get; set; }
+        public string TranportedDateTime { get; set; } = null!;
     }
 }
