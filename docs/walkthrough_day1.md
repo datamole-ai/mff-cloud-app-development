@@ -93,11 +93,9 @@ Response Body:
 * HTTP API - [Azure functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
 * Storage - [Azure table](https://docs.microsoft.com/en-us/azure/storage/tables/)
 
-Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/templates/) templates. See [arm/lesson-1](/arm/lesson-1) folder.
+Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/templates/) templates.
 
 ## Steps
-
-**NOTE**: The following examples use a multi-platform command line [Powershell](https://github.com/PowerShell/PowerShell) commands. **Some may contain mixed slashes `\` and `/`.**
 
 ### Repository
 
@@ -111,11 +109,13 @@ git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 It has the following directories 
 - `/arm` - template to create the infrastructure
 - `/docs` - documents
-- `/sln` - the root for a code
+- `/sln` - .NET projects containing source code for final solution (that is more complex than needed for this lesson)
 
 ## Deploy the infrastructure
 
-Navigate to the `/arm` directory
+Prerequisities: Azure CLI
+
+Navigate to the `/arm/lesson-1` directory
 
 See [arm template](/arm/lesson-1/resources.azrm.json). It contains
 - function app - Azure function resource
@@ -128,9 +128,9 @@ First thing is to create a new resource group. In the following command, replace
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Edit the `storageAccountName` value in the `/arm/resources.azrm.parameters.json`.
+Edit the `storageAccountName` value in the `/arm/lesson-1/resources.azrm.parameters.json`.
 
-Then, deploy the infrastructure defined in `/arm/resources.azrm.json` with the following command.
+Then, deploy the infrastructure defined in `/arm/lesson-1/resources.azrm.json` with the following command.
 
 ```pwsh
 cd arm
@@ -146,15 +146,7 @@ After it's created, you will see the following lines in the output
 storageAccountConnectionString  String
   DefaultEndpointsProtocol=https;AccountName=<your-unique-storage-account-name>;EndpointSuffix=core.windows.net;AccountKey=...       
 ```
-
 Remember it, we will need it for local debugging later.
-
-**NOTE**: You shouldn't run the same command for more then one resource group. You may start to receive an error that says something is wrong but doesn't tell you exactly what. It may pop up when you have two resource groups with an account with the same name
-```
-Error: Code=InvalidTemplateDeployment; Message=The template deployment 'deploy-mff-task-components' is not valid according to the | validation procedure. The tracking id is '21c4d4e9-4f23-4192-bdea-0dfe41d39035'. See inner errors for details.
-```
-
-But now, we will test that the template itself works. Implementation will be homework.
 
 ## Create Azure Functions from a template
 
@@ -168,6 +160,7 @@ func init "AzureFunctions" --worker-runtime "dotnetIsolated"
 ```
 
 Create the individual Azure Functions
+  
 ```pwsh
 cd /sln/AzureFunctions
 
