@@ -13,35 +13,22 @@ TODO Tom P.
 
 ## Case study problem statement
 
-TODO Máša
 
-The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. We will start simple.
+We will start simple.
+
+The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
+
+### Examples
+* Electronics box number 1 moved from Rack 25 to Rack 35.
+* Clothes box number 45 moved from Rack 34 to Rack 20.
+* How many objects were moved during the day and what was an average transportation time?
 
 ### Ideas ?
 
 ### Resulting design
 
-```mermaid
-flowchart LR
-  device[Client Device]
-  reportingApp[Reporting Frontend]
-  subgraph platform[Transportation Platform]
-    subgraph api[API]
-      reportingApi[Reporting]
-      ingressApi[Ingress]
-    end
-    subgraph storage[Storage]
-      rawRecordTable[Raw Records Table]
-    end
-  end  
-  ingressApi -- Store records --> rawRecordTable
-  reportingApi -- Query records --> rawRecordTable
-  reportingApp -- Query daily statistics --> reportingApi
-  device -- Generate events --> ingressApi
-  
-```
+![Design](./imgs/diagram_1.drawio.png)
 
-![Design](./imgs/diagram_1.png)
 
 ## Components
 
