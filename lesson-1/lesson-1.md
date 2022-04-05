@@ -106,18 +106,27 @@ git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 ```
 
 **NOTE**: The root of the repository will be always referred to as `/`. Don't confuse it with root of file system.
-It has the following directories 
-- `/arm` - template to create the infrastructure
-- `/docs` - documents
-- `/sln` - .NET projects containing source code for final solution (that is more complex than needed for this lesson)
+
+It has the following directories
+
+* `/lesson-1`
+  * `/arm` - ARM template to create the infrastructure
+  * `/sln` - .NET projects
+  * lesson-1.md
+* `/lesson-2`
+  * `/arm` - ARM template to create the infrastructure
+  * `/sln` - .NET projects
+  * lesson-2.md
+
+During this lesson, only the directory `lesson-1` is relevant.
 
 ## Deploy the infrastructure
 
-Prerequisities: Azure CLI
+Prerequisites: Azure CLI
 
-Navigate to the `/arm/lesson-1` directory
+Navigate to the `/arm` directory
 
-See [arm template](/arm/lesson-1/resources.azrm.json). It contains
+See [arm template](/arm/resources.azrm.json). It contains
 - function app - Azure function resource
 - storage account - required to store the data and the azure function
 - app insights - monitoring for azure function 
@@ -128,9 +137,9 @@ First thing is to create a new resource group. In the following command, replace
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Edit the `storageAccountName` value in the `/arm/lesson-1/resources.azrm.parameters.json`.
+Edit the `storageAccountName` value in the `arm/resources.azrm.parameters.json`.
 
-Then, deploy the infrastructure defined in `/arm/lesson-1/resources.azrm.json` with the following command.
+Then, deploy the infrastructure defined in `arm/resources.azrm.json` with the following command.
 
 ```pwsh
 cd arm
@@ -150,19 +159,19 @@ Remember it, we will need it for local debugging later.
 
 ## Create Azure Functions from a template
 
-[Install](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools) Azure Functions Core Tools.
+Prerequisites: [Azure Functions Core](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools)
 
-Create Azure Function .net project in `sln` folder. ([docs here](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-csharp?tabs=azure-cli%2Cbrowser#create-a-local-function-project))
+Create Azure Function .NET project ([docs here](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-csharp?tabs=azure-cli%2Cbrowser#create-a-local-function-project))
 
 ```pwsh
-cd /sln
+cd sln
 func init "AzureFunctions" --worker-runtime "dotnetIsolated"
 ```
 
 Create the individual Azure Functions
   
 ```pwsh
-cd /sln/AzureFunctions
+cd sln/AzureFunctions
 
 func new --name "Reporter" --template "HTTP trigger" --authlevel "function"
 func new --name "EventConsumer" --template "HTTP trigger" --authlevel "function"
@@ -182,7 +191,7 @@ to
 ## Publish Azure Functions
 
 ```pwsh
-cd /sln/AzureFunctions
+cd sln/AzureFunctions
 func azure functionApp publish "mff-iot-example-fa"
 ```
 

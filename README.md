@@ -55,6 +55,9 @@ Web: https://www.ksi.mff.cuni.cz/teaching/nswi152-web/
 
 ## Tooling
 
+
+* TODO: describe C#/.NET Tooling - nothing is needed and supported
+
 - Azure account
 - .NET 5 SDK
 - Tools:
