@@ -1,5 +1,8 @@
-Walkthrough - Practicals 2
+# Lesson 2
 
+## Overview of relevant Azure resources
+
+* Azure Event Hubs
 
 # Problem
 

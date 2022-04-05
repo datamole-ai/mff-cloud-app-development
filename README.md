@@ -1,6 +1,6 @@
 # MFF/NSWI152 - Cloud Application Development - IoT
 
-There will be three lessons in total. During the first 2 lessons, specifics of IoT cloud solutions will be discussed and end-to-end system design for an example IoT use-case will be presented in an incremental way. In the end of the 2nd lesson, the assignment for the semestral project will be presented. 
+There will be 3 lessons in total. During the first 2 lessons, specifics of IoT cloud solutions will be discussed and end-to-end system design for an example IoT use-case will be presented in an incremental way. In the end of the 2nd lesson, the assignment for the semestral project will be presented. 
 
 # Semestral project
 
