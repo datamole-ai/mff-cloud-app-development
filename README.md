@@ -1,5 +1,50 @@
-MFF - NSWI 152 - Cloud Application Development - Solutions for IoT
----
+# MFF/NSWI152 - Cloud Application Development - IoT
+
+There will be three lessons in total. During the first 2 lessons, specifics of IoT cloud solutions will be discussed and end-to-end system design for an example IoT use-case will be presented in an incremental way. In the end of the 2nd lesson, the semestral project assignment will be presented. 
+
+# Semestral project
+
+The assignment will be require students to prepare a system design for a different IoT use case. Students are expected to deliver the solution for the assignment in form of text documents and diagrams.
+
+The documents and diagrams representing the solution should be stored in **private GitHub repository** and pushed to the branch `feature/solution`. After that following actions are required:
+
+* Create a  **Pull Request** from `feature/solution` branch to `main` branch 
+* Add `Read` permissions to following GitHub users:
+  * [tomas-pajurek](https://github.com/tomas-pajurek)
+  * [jmasek-dtml](https://github.com/jmasek-dtml)
+  * [mzatloukal-dtml](https://github.com/mzatloukal-dtml)
+* Send email to `mff-nswi152@datamole.ai`
+
+This process will enable smooth delivery of feedback via comments.
+
+[Assignment](./docs/assignment.md)
+
+# Contents
+
+
+
+## Lesson 1 - Use Case (12. 04. 2022)
+
+The situation is as follows. The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
+
+For more details visit [this document](./docs/walkthrough_day1.md).
+
+## Lesson 2 - Use Case (19. 04. 2022)
+
+The situation has changed in the following way: 
+- The business is thriving and the number of smart warehouses is about to increase from one to a hundred.
+- The client request a simple anomaly detection tool.
+
+The architecture would need to adjust at multiple levels.
+
+For more details visit [this document](./docs/walkthrough_day2.md).
+
+## Lesson 3: Semestral project presentations, Bonus topics (26. 04. 2022)
+
+* Students will present solutions for their semestral project.
+* Reference solution will be provided.
+
+
 
 Web: https://www.ksi.mff.cuni.cz/teaching/nswi152-web/
 
@@ -43,28 +88,3 @@ Check that it works by typing
   * [Scaling](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-scalability)
   * [Availability/Consistency](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-availability-and-consistency?tabs=dotnet)
 
-# Semestral project
-
-* [Assignment](./docs/assignment.md)
-
-# Contents
-
-## Practicals 1 - Use Case (28. 04. 2021)
-
-The situation is as follows. The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
-
-For more details visit [this document](./docs/walkthrough_day1.md).
-
-## Practicals 2 - Use Case (05. 05. 2021)
-
-The situation has changed in the following way: 
-- The business is thriving and the number of smart warehouses is about to increase from one to a hundred.
-- The client request a simple anomaly detection tool.
-
-The architecture would need to adjust at multiple levels.
-
-For more details visit [this document](./docs/walkthrough_day2.md).
-
-## Practicals 3 - Use Case (11. 05. 2021)
-
-Semestral project example solution. The diagrams will be published after the semester is finished.
