@@ -57,7 +57,7 @@
 * Processing of data.
 * Cloud-to-device communication.
 
-### Cloud services for IoT solutions
+### Challenges for cloud services
 
 * Unbalanced load in time - autoscaling.
 * IoT devices are frequently geodistributed.
@@ -68,8 +68,7 @@
     * Not trivial to achieve in distributed systems.
         * Retries, failovers.
         * Tradeoff with high-availability.
-    * Performance sensitive - throughput vs latency.
-        * Batching
+    * Batching- throughput vs latency.
 * Parallel processing of data from multiple devices.
 * Extremely unreliable clocks on devices.
 * Huge amounts of relatively low-value transactions compared to typical business applications.
