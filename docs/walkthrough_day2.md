@@ -26,7 +26,7 @@ This feature is developed by a different team (they will maybe use [Azure Stream
 
 This is the previous design.
 
-![Design](./imgs/diagram_1.png)
+![Design](./imgs/diagram_1.drawio.png)
 
 ![Design](./imgs/diagram_2.png)
 
