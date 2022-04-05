@@ -2,9 +2,13 @@
 
 ## Overview of relevant Azure resources
 
-* Azure Storage (Blobs, Tables)
-* Azure Functions (HTTP Trigger)
-* Application Insights
+* [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/)
+  * [Blobs](https://docs.microsoft.com/en-us/azure/storage/blobs/)
+  * [Tables](https://docs.microsoft.com/en-us/azure/storage/tables/)
+* [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
+  * HTTP Trigger
+* [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview/)
+* [Azure Resource Manager (ARM) Templates](https://docs.microsoft.com/en-us/azure/templates/)
 
 ## Specifics of cloud development for Internet of Things
 
@@ -87,48 +91,24 @@ Response Body:
 }
 ```
 
-# Implementation
+## Implementation
 
-* HTTP API - [Azure functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
-* Storage - [Azure table](https://docs.microsoft.com/en-us/azure/storage/tables/)
+In this section, the necessary Azure resources will be deployed and a skeleton of the .NET solution will be developed. Actual implementation of the .NET solution is left up to the students as homework.
 
-Deployed using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/templates/) templates.
 
-## Steps
+### Deploy the infrastructure
 
-### Repository
+Prerequisites: [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 
 Clone the repository
 
 ```
 git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 ```
-
-**NOTE**: The root of the repository will be always referred to as `/`. Don't confuse it with root of file system.
-
-It has the following directories
-
-* `/lesson-1`
-  * `/arm` - ARM template to create the infrastructure
-  * `/sln` - .NET projects
-  * lesson-1.md
-* `/lesson-2`
-  * `/arm` - ARM template to create the infrastructure
-  * `/sln` - .NET projects
-  * lesson-2.md
-
-During this lesson, only the directory `lesson-1` is relevant.
-
-## Deploy the infrastructure
-
-Prerequisites: Azure CLI
-
-Navigate to the `/arm` directory
-
-See [arm template](/arm/resources.azrm.json). It contains
-- function app - Azure function resource
-- storage account - required to store the data and the azure function
-- app insights - monitoring for azure function 
+Navigate to the `lesson-1/arm` directory and see the [ARM template](/lesson-1/arm/resources.azrm.json). It contains
+* Function App
+* Storage Account
+* App Insights
 
 First thing is to create a new resource group. In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-<name>-<surname>").
 
@@ -136,9 +116,9 @@ First thing is to create a new resource group. In the following command, replace
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Edit the `storageAccountName` value in the `arm/resources.azrm.parameters.json`.
+Edit the `storageAccountName` value in the `lesson-1/arm/resources.azrm.parameters.json`.
 
-Then, deploy the infrastructure defined in `arm/resources.azrm.json` with the following command.
+Then, deploy the infrastructure defined in `lesson-1/armresources.azrm.json` with the following command.
 
 ```pwsh
 cd arm
@@ -156,21 +136,23 @@ storageAccountConnectionString  String
 ```
 Remember it, we will need it for local debugging later.
 
-## Create Azure Functions from a template
+
+### Create Azure Functions from a template
 
 Prerequisites: [Azure Functions Core](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools)
 
 Create Azure Function .NET project ([docs here](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-csharp?tabs=azure-cli%2Cbrowser#create-a-local-function-project))
 
 ```pwsh
-cd sln
+mkdir ./iot-usecase-1
+cd ./iot-usecase-1
 func init "AzureFunctions" --worker-runtime "dotnetIsolated"
 ```
 
 Create the individual Azure Functions
   
 ```pwsh
-cd sln/AzureFunctions
+cd ./iot-usecase-1/AzureFunctions
 
 func new --name "Reporter" --template "HTTP trigger" --authlevel "function"
 func new --name "EventConsumer" --template "HTTP trigger" --authlevel "function"
@@ -190,7 +172,7 @@ to
 ## Publish Azure Functions
 
 ```pwsh
-cd sln/AzureFunctions
+cd iot-usecase-1/AzureFunctions
 func azure functionApp publish "mff-iot-example-fa"
 ```
 
