@@ -265,14 +265,7 @@ In production, App Insights are critical, you can create rules that fire alert a
 - Significant increase of BAD REQUEST responses after API upgrade -> it was not as backwards compatible as expected.
 - Some Internal Server Error -> reveals bugs
 
-<!-- Should we have more time, we can add some events here -->
-
----
-The part below is the homework
-
-## Implement Http Api function
-
-cd `/sln/AzureFunction`
+## Homework - Implement the HTTP API functions
 
 For manipulating azure table, add package
 `dotnet add package WindowsAzure.Storage`
@@ -390,7 +383,7 @@ return req.CreateResponse(HttpStatusCode.Accepted);
 - No exception handling
 - Creating new instances of the table client with each requests
 
-## Implement Client
+### Implement Client
 
 Using the commands above
 - create table client
@@ -400,7 +393,7 @@ Using the commands above
 
 You can get inspired how to address the issue in the example solution that will be presented the next time.
 
-## Local Test
+### Local Test
 
 **NOTE:** Only http triggered function can be tested locally.
 
@@ -426,7 +419,7 @@ func start --build
 
 Then use the requests from the section [Smoke Test](#Smoke-Test)
 
-# Storage Check
+### Storage Check
 
 Open Azure Storage Explorer and log in.
 
