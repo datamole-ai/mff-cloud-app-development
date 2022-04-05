@@ -1,9 +1,8 @@
-# Lecture 1
+# Lesson 1
 
 ## Overview of relevant Azure resources
 
 * Azure Storage (Blobs, Tables)
-* Event Hub
 * Azure Functions (HTTP Trigger + Event Hub Trigger)
 * Application Insights
 
