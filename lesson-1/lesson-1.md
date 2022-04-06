@@ -88,7 +88,26 @@ The client has one warehouse in which objects are moved from one location to ano
 * Clothes box number 45 moved from Rack 34 to Rack 20.
 * How many objects were moved during the day and what was an average transportation time?
 
-### Ideas ?
+### Ideas - discussion
+```
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+ 
+``` 
+ 
 
 ### Resulting design
 
@@ -147,7 +166,7 @@ Response Body:
 
 ```json
 {
-  "day": "2022-04-05",
+  "day": "20220405",
   "totalTransported": 42,
   "avgDurationOfTransportationSec": 40.2,
 }
