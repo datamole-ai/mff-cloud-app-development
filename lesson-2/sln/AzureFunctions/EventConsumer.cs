@@ -53,9 +53,9 @@ namespace AzureFunctions
                 }
                 record = JsonSerializer.Deserialize<Transport>(str)!;
             }
-            catch (AggregateException e) when (e.InnerExceptions[0] is JsonException)
+            catch (Exception e)
             {
-                _logger.LogError("Invalid request body: {error}", e.InnerExceptions[0].Message);
+                _logger.LogError("Invalid request body: {error}", e);
                 return new BadRequestResult();
             }
 
