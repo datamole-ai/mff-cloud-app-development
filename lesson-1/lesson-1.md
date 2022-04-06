@@ -184,9 +184,9 @@ Then, deploy the infrastructure defined in `lesson-1/arm/resources.azrm.json` wi
 
 ```pwsh
 cd lesson-1/arm
-az deployment group create \
-  --name "deploy-mff-task-components" \
-  --resource-group <resource-group> \
+az deployment group create `
+  --name "deploy-mff-task-components" `
+  --resource-group "mff-lectures" `
   --template-file "resources.azrm.json" `
   --parameters "resources.azrm.parameters.json"
 ```
@@ -308,10 +308,8 @@ In production, App Insights are critical, you can create rules that fire alert a
 
 ## Homework - Implement the HTTP API functions
 
-TODO: Michal Z.
-
 For manipulating azure table, add package
-`dotnet add package WindowsAzure.Storage`
+`dotnet add package Azure.Data.Tables`
 
 Create model of the HTTP Request 
 ```cs
@@ -335,12 +333,27 @@ public class Transport
 ```
 Parse the incoming request in the `/sln/AzureFunctions/EventConsumer.cs` file created by the azure function template.
 ```cs
-
-public async Task<HttpResponseData> Run(
-  [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req,
-  FunctionContext executionContext)
+[FunctionName("EventConsumer")]
+public async Task<IActionResult> Run(
+    [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
 {
-  var model = req.ReadFromJsonAsync<Transport>();
+    Transport record;
+    try
+    {
+        var str = await req.ReadAsStringAsync();
+        if (string.IsNullOrEmpty(str))
+        {
+            _logger.LogError("empty body");
+
+            return new BadRequestResult();
+        }
+        record = JsonSerializer.Deserialize<Transport>(str)!;
+    }
+    catch (Exception e)
+    {
+        _logger.LogError("Invalid request body: {error}", e);
+        return new BadRequestResult();
+    }
 }
 ```
 Create a storage client. The environment property will be added later.
@@ -350,55 +363,65 @@ var storageConnectionString = Environment.GetEnvironmentVariable("StorageAccount
 var tableName = "transports";
 
 var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-var tableClient = storageAccount.CreateCloudTableClient();
-
-var table = tableClient.GetTableReference(tableName);
+var tableClient = new TableClient(connectionString, tableName);
 ```
 
 Create an TableEntity
 
 ```cs
-public class TransportEntity : TableEntity
-{
-  public TransportEntity()
-  {
+    public class TransportEntity : ITableEntity
+    {
+        public static string PartitionKeyFormat { get; set; } = "yyyyMMdd";
 
-  }
+        public TransportEntity()
+        {
 
-  public TransportEntity(
-      string transportId,
-      string objectId,
-      DateTimeOffset transportedDateTimeOffset,
-      double transportDurationSec,
-      string locationFrom,
-      string locationTo
-      ) :
-      base(transportedDateTimeOffset.ToString("yyyyMMdd"), transportId)
-  {
-      TransportedDateTime = transportedDateTimeOffset.ToString("o");
-      ObjectId = objectId;
-      TransportDurationSec = transportDurationSec;
-      LocationFrom = locationFrom;
-      LocationTo = locationTo;
-  }
+        }
 
+        public TransportEntity(
+            string transportId,
+            string warehouseId,
+            string objectId,
+            DateTimeOffset transportedDateTimeOffset,
+            double timeSpentSeconds,
+            string locationFrom,
+            string locationTo
+            )
+        {
+            PartitionKey = transportedDateTimeOffset.ToString("yyyyMMdd");
+            RowKey = warehouseId + ":" + transportId;
 
-  [IgnoreProperty]
-  public string TransportId => RowKey;
-  public string ObjectId { get; set; } = null;
-  public double TimeSpentSeconds { get; set; }
-  public string LocationFrom { get; set; } = null;
+            TransportedDateTime = transportedDateTimeOffset.ToString("o");
 
-  public string LocationTo { get; set; } = null;
+            TransportId = transportId;
+            WarehouseId = warehouseId;
+            ObjectId = objectId;
+            TimeSpentSeconds = timeSpentSeconds;
+            LocationFrom = locationFrom;
+            LocationTo = locationTo;
+        }
 
-  [IgnoreProperty]
-  public DateTimeOffset TransportedDateTimeOffset => DateTimeOffset.Parse(TransportedDateTime, CultureInfo.InvariantCulture);
+        public string PartitionKey { get; set; } = null!;
+        public string RowKey { get; set; } = null!;
+        public DateTimeOffset? Timestamp { get; set; }
+        public ETag ETag { get; set; }
 
-  public string TransportedDateTime { get; set; } = null!;
+        public string TransportId { get; set; } = null!;
+        public string WarehouseId { get; set; } = null!;
+        public string ObjectId { get; set; } = null!;
+        public double TimeSpentSeconds { get; set; }
+        public string LocationFrom { get; set; } = null!;
+
+        public string LocationTo { get; set; } = null!;
+
+        public DateTimeOffset TransportedDateTimeOffset() => DateTimeOffset.Parse(TransportedDateTime, CultureInfo.InvariantCulture);
+
+        public string TransportedDateTime { get; set; } = null!;
+    }
 }
 ```
 
-Add transport to the table
+Add transport entity to the table
 ```cs
 var transportId = Guid.NewGuid().ToString();
 var entity = new TransportEntity(
@@ -410,8 +433,7 @@ var entity = new TransportEntity(
     transport.LocationTo
 );
 
-var operation = TableOperation.InsertOrMerge(entity);
-await _table.ExecuteAsync(operation);
+await _tableClient.AddEntityAsync(entity);
 ```
 
 And return response
