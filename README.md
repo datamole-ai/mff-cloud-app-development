@@ -24,12 +24,12 @@ Formal assignment can be found in the [semestral-project-assignment.md](./semest
 * **Lesson 1** (12. 04. 2022)
   * Specifics of cloud development for IoT
   * Example IoT case study (basic solution)
-  * Homework I. 
+  * Voluntary homework I. 
   * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
 
 * **Lesson 2** (19. 04. 2022)
   * Example IoT case study (advanced solution)
-  * Homework II.
+  * Voluntary homework II.
   * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
 
 * **Lesson 3** (26. 04. 2022)
