@@ -1,36 +1,76 @@
-MFF - NSWI 152 - Cloud Application Development - Solutions for IoT
----
+# MFF/NSWI152 - Cloud Application Development - IoT
 
-Web: https://www.ksi.mff.cuni.cz/teaching/nswi152-web/
+There will be 3 lessons in total. During the first 2 lessons, specifics of IoT cloud solutions will be discussed and end-to-end system design for an example IoT case study will be presented in an incremental way. In the end of the 2nd lesson, the assignment for the semestral project will be presented. 
+
+# Semestral project
+
+The assignment will require students to prepare a system design for a simple IoT case study. Students are expected to deliver the solution for the assignment in form of text documents and diagrams.
+
+The documents and diagrams representing the solution should be stored in **private GitHub repository** and pushed to the branch `feature/solution`. After that following actions are required:
+
+* Create a  **Pull Request** from `feature/solution` branch to `main` branch 
+* Add `Read` permissions to following GitHub users:
+  * [tomas-pajurek](https://github.com/tomas-pajurek)
+  * [jmasek-dtml](https://github.com/jmasek-dtml)
+  * [mzatloukal-dtml](https://github.com/mzatloukal-dtml)
+* Send email to `mff-nswi152@datamole.ai`
+
+This process will enable smooth delivery of feedback via comments.
+
+Formal assignment can be found in the [semestral-project-assignment.md](./semestral-project-assignment.md) file.
+
+# Lesson Outline
+
+* **Lesson 1** (12. 04. 2022)
+  * Specifics of cloud development for IoT
+  * Example IoT case study (basic solution)
+  * Homework I. 
+  * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
+
+* **Lesson 2** (19. 04. 2022)
+  * Example IoT case study (advanced solution)
+  * Homework II.
+  * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
+
+* **Lesson 3** (26. 04. 2022)
+  * Students' presentations of semestral projects.
+  * For more details visit [semestral-project-assignment.md](./semestral-project-assignment.md).
+  * Reference solution will be provided.
 
 # Prerequisites 
 
-- Basic Azure resources knowledge
-- C# basics
+## Knowledge
+
+* Concepts and usange of basic Azure resources
+  * Azure Storage (blobs, tables)
+  * Azure App Insights
+  * Azure App Service (Functions)
+- Programming in .NET/C#
 
 ## Tooling
 
-- Azure account
-- .NET 5 SDK
-- Tools:
-  - [Azure Function Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#v2)
-  - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-  - [Azure Storage Explorer (if you want read a table by yourself)](https://azure.microsoft.com/en-us/features/storage-explorer/)
+* IDE/text editor for writing & debugging C# code.
+  * Visual Studio
+  * Visual Studio Code
+  * Rider
+* Azure subscription
+* .NET 6 SDK
+* [Azure Function Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#v2)
+* [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+* [Azure Storage Explorer (if you want read a table by yourself)](https://azure.microsoft.com/en-us/features/storage-explorer/)
 
-Log in via `az login` to your azure account.
+Tooling test:
 
-Check that it works by typing
-- `func --version` to check that the Azure Functions Core Tools are version 3.x.
-- `az --version` to check that the Azure CLI version is 2.4 or later.
-- `az account list` 
-- `dotnet --list-sdks` to check that .NET Core SDK 5 is installed
+* Log in via `az login` to your azure account.
 
-<!-- az account set --subscription <subscriptionId> -->
+* `func --version` to check that the Azure Functions Core Tools.
+* `az --version` to check that the Azure CLI version is 2.34 or later.
+* `az account list` 
+* `dotnet --list-sdks` to check that .NET Core SDK 6 is installed. 
 
-# Recommended resources
+## Recommended resources
 
 * [Cloud Architecture Patterns](https://docs.microsoft.com/en-us/azure/architecture/patterns/)
-* Kleppmann, M. (2017). **Designing Data-Intensive Applications**. O'Reilly Media, Inc. ISBN: 978-1-4493-7332-0 
 * Azure Storage Documentation
   * [Blobs](https://azure.microsoft.com/en-us/services/storage/blobs/)
   * [Tables - Design](https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-design-guidelines)
@@ -42,29 +82,4 @@ Check that it works by typing
   * [Terminology](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-features)
   * [Scaling](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-scalability)
   * [Availability/Consistency](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-availability-and-consistency?tabs=dotnet)
-
-# Semestral project
-
-* [Assignment](./docs/assignment.md)
-
-# Contents
-
-## Practicals 1 - Use Case (28. 04. 2021)
-
-The situation is as follows. The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
-
-For more details visit [this document](./docs/walkthrough_day1.md).
-
-## Practicals 2 - Use Case (05. 05. 2021)
-
-The situation has changed in the following way: 
-- The business is thriving and the number of smart warehouses is about to increase from one to a hundred.
-- The client request a simple anomaly detection tool.
-
-The architecture would need to adjust at multiple levels.
-
-For more details visit [this document](./docs/walkthrough_day2.md).
-
-## Practicals 3 - Use Case (11. 05. 2021)
-
-Semestral project example solution. The diagrams will be published after the semester is finished.
+* Kleppmann, M. (2017). **Designing Data-Intensive Applications**. O'Reilly Media, Inc. ISBN: 978-1-4493-7332-0 
