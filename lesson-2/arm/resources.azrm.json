@@ -172,7 +172,7 @@
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
-                            "value": "~3"
+                            "value": "~4"
                         },
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -180,7 +180,7 @@
                         },
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
-                            "value": "dotnet-isolated"
+                            "value": "dotnet"
                         },
                         {
                             "name": "StorageAccountConnectionString",

@@ -2,12 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using AzureFunctions.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace AzureFunctions
 {
@@ -25,23 +31,22 @@ namespace AzureFunctions
             _reportRepository = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        [Function("Reporter")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req,
-            FunctionContext executionContext)
+        [FunctionName("Reporter")]
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
         {
-            var query = req.Url.Query;
+            var query = req.Query.ToString();
             if (string.IsNullOrEmpty(query))
             {
                 _logger.LogError("Uri does not contain any query");
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestResult();
             }
 
-            var queryParams = HttpUtility.ParseQueryString(req.Url.Query);
+            var queryParams = HttpUtility.ParseQueryString(query);
             var days = queryParams.GetValues(_dayParamName);
             if (days is null || days.Length != 1)
             {
                 _logger.LogError("Expected number of {dayName} is 1", _dayParamName);
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestResult();
             }
 
             var dayText = days[0];
@@ -52,14 +57,14 @@ namespace AzureFunctions
                 out var day))
             {
                 _logger.LogError("Could not parse day {dayText}", dayText);
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestResult();
             }
 
             var warehouses = queryParams.GetValues(_warehouseParamName);
             if (warehouses is null || warehouses.Length != 1)
             {
                 _logger.LogError("Expected number of {warehouseName} is 1", _warehouseParamName);
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestResult();
             }
             var warehouse = warehouses[0];
 
@@ -71,19 +76,17 @@ namespace AzureFunctions
                 var stats = await _reportRepository.GetWarehouseDayStatisticsAsync(warehouse, day);
                 if (stats is null)
                 {
-                    return req.CreateResponse(HttpStatusCode.NoContent);
+                    return new NoContentResult();
                 }
                 else
                 {
-                    var response = req.CreateResponse(HttpStatusCode.OK);
-                    await response.WriteAsJsonAsync(stats);
-                    return response;
+                    return new OkObjectResult(new StringContent(JsonConvert.SerializeObject(stats), Encoding.UTF8, "application/json"));
                 }
             }
             catch (InvalidOperationException ioe)
             {
                 _logger.LogError("Error while fetching the statistics. Error {error}", ioe);
-                return req.CreateResponse(HttpStatusCode.BadRequest);
+                return new BadRequestResult();
             }
         }
     }
