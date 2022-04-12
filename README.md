@@ -22,12 +22,14 @@ Formal assignment can be found in the [semestral-project-assignment.md](./semest
 # Lesson Outline
 
 * **Lesson 1** (12. 04. 2022)
+  * Overview of relevant Azure resources - Storage (Blobs, Tables), Functions with HTTP Trigger, Application Insights, ARM templates. 
   * Specifics of cloud development for IoT
   * Example IoT case study (basic solution)
   * Voluntary homework I. 
   * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
 
 * **Lesson 2** (19. 04. 2022)
+  * Overview of relevant Azure resources - Event Hub, Functions with Event Hub Trigger.
   * Example IoT case study (advanced solution)
   * Voluntary homework II.
   * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
