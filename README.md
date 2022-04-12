@@ -36,8 +36,9 @@ Formal assignment can be found in the [semestral-project-assignment.md](./semest
 
 * **Lesson 3** (26. 04. 2022)
   * Students' presentations of semestral projects.
+  * Discussion of reference solution.
+  * Advanced topics.
   * For more details visit [semestral-project-assignment.md](./semestral-project-assignment.md).
-  * Reference solution will be provided.
 
 # Prerequisites 
 
