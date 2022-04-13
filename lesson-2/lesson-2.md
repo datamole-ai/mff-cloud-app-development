@@ -30,9 +30,9 @@ This feature is developed by a different team (they will maybe use [Azure Stream
 
 This is the previous design.
 
-![Design](./imgs/diagram_1.drawio.png)
+![Design](../lesson-1/imgs/diagram_1.drawio.png)
 
-![Design](./imgs/diagram_2.png)
+
 
 - The input data would require a new field `warehouseId` and this needs to be propagated throughout the system
 - We would need abandon Azure Function event consumer in favor of event hub because of predictable scaling and that each event is now being read by two different components.
@@ -40,22 +40,26 @@ This is the previous design.
   - Create a cron job that will process the data for the previous day.
   - Create the reports on demand.
 
-
 **Note** that working with time is a hassle. Daylight savings, time zones, manual changes is an issue in distributed programing. Therefore we expect all records to come from one timezone and the datetime corresponds precisely to the time of the transportation.
+
+![Design](./imgs/diagram_2.drawio.png)
+
 
 ## Components
 
 - Event Hub
-  - Event Consumer
 - HTTP API
   - Reporter
 - Storage
   - Transport Table
   - Report Blobs
+- Processing
+  - Event Consumer
+  - Statistic generator
 
 The Azure Function Event Consumer has been abandoned from the following reason
 - We have more than one event processor. The Azure Function accepting the request would need to store the event and notify the Anomaly Detection component which is not desirable (synchronous calls should be performed carefully).
-- Predictable scaling behavior. While Azure Functions can scale out, it still takes a while and could cost a fortune. Putting events to the Event Hub allow us to smooth the spikes and if needed it does not block us from adding more consumers to help out with the situation.
+- Predictable scaling behavior. Event Hub allows us to remove coupling between Event producer and Azure Function. While Azure Functions can scale out, it still takes a while and could cost a fortune. Putting events to the Event Hub allow us to smooth the spikes and if needed it does not block us from adding more consumers to help out with the situation.
 - An error in the function will cause loss of data. 
 
 ## API Changes
@@ -66,12 +70,12 @@ Add `warehouseId`:
 
 ```json
 {
-  "locationFrom":<string>,
-  "locationTo":<string>,
-  "timeSpentSec":<number>,
-  "objectId":<string>,
-  "warehouseId":<string>,
-  "transportedDateTime":<string>,
+  "warehouseId": "Prague1",
+  "objectId": "electronics-box-1",
+  "transportedDateTime": "2022-04-05T15:01:02Z",
+  "locationFrom": "rack-25",
+  "locationTo": "rack-35",
+  "transportDurationSec": 31
 }
 ```
 
@@ -81,6 +85,15 @@ Add a Request Query Parameters:
 - `warehouse`- an ID of a given warehouse
 
 
+```json
+{
+  "warehouseId": "Berlin5",
+  "day": "20220405",
+  "totalTransported": 42,
+  "avgDurationOfTransportationSec": 40.2,
+}
+```
+<!---  TODO 
 
 # Implementation
 
@@ -322,3 +335,6 @@ And lastly you can check the Reporter API. You should receive the report in the 
   "avgTimeOfTransportation":52.27272727272727
 }
 ```
+
+
+--->
