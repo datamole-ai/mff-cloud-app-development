@@ -46,7 +46,7 @@ Formal assignment can be found in the [semestral-project-assignment.md](./semest
 
 ## Knowledge
 
-* Concepts and usange of basic Azure resources
+* Concepts and usage of basic Azure resources
   * Azure Storage (blobs, tables)
   * Azure App Insights
   * Azure App Service (Functions)
