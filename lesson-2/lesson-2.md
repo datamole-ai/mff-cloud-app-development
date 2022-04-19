@@ -166,6 +166,7 @@ public static class EventConsumer
 ```
 # Semetral project
 
-TODO: Tom P.
+Assignment: [semestral-project-assignment.md](../semestral-project-assignment.md)
+
 
 
