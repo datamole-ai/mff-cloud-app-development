@@ -2,7 +2,7 @@
 
 ## Goal
 
-Design an solution architecture of a cloud system for collecting logs from IoT devices, performing anomaly detection on them and reporting results to a web application.
+Design an system/solution architecture of a cloud system for collecting logs from IoT devices, performing anomaly detection on them and reporting results to a web application. Actual **implementation is not required**.
 
 * Use Microsoft Azure Cloud.
 * Choose suitable Azure services and their integration approach.
