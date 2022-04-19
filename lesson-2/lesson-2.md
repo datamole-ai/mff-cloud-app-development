@@ -142,7 +142,7 @@ And we reflect that in the function mapping from model to entity.
 
 ## Change EventConsumer function from HTTP Trigger to Event Hub Trigger
 
-TODO: Michal Z - Link to MSFT docs
+Documentation (https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-event-hubs-trigger?tabs=in-process%2Cfunctionsv2%2Cextensionv5)
 
 ```cs
 public static class EventConsumer
