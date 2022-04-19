@@ -32,9 +32,11 @@ Formal assignment can be found in the [semestral-project-assignment.md](./semest
   * Overview of relevant Azure resources - Event Hub, Functions with Event Hub Trigger.
   * Example IoT case study (advanced solution)
   * Voluntary homework II.
+  * Assignment of semestral project.
   * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
 
 * **Lesson 3** (26. 04. 2022)
+  * Deadline for semestral project (till the start of the lesson). 
   * Students' presentations of semestral projects.
   * Discussion of reference solution.
   * Advanced topics.
