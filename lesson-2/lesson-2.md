@@ -11,7 +11,7 @@ The situation has changed in the following way:
 - The business is thriving and the number of smart warehouses is about to increase from one to a hundred.
 - The client request a simple anomaly detection tool.
 
-The architecture would need to adjust at multiple levels
+The architecture would need to adjust at multiple levels.
 
 ## API
 
@@ -40,12 +40,31 @@ This is the previous design.
 
 **Note** that working with time is a hassle. Daylight savings, time zones, manual changes is an issue in distributed programing. Therefore we expect all records to come from one timezone and the datetime corresponds precisely to the time of the transportation.
 
-![Design](./imgs/diagram_2.drawio.png)
+![Design](./imgs/diagram_2_on_demand_cache.drawio.png)
 
 ## Discussion
 
 * Various statistics calculation and caching strategies (on-the-fly, on-the-fly with cache, cron).
   * Deduplication of calculation requests
+```
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+ 
+``` 
+![Design](./imgs/diagram_2_cron.drawio.png)
 * Deduplication of incoming messages
   * Device-side duplication
   * Service-side duplication
