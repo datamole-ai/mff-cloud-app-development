@@ -1,14 +1,14 @@
 {
     "storageAccountName": {
-        "value": "mytest202204041315"
+        "value": "mytest202204121640"
     },
     "transportsTableName": {
         "value": "transports"
     },
     "appInsightsName": {
-        "value": "mff-test-iot-ai-202204041315"
+        "value": "mff-test-iot-ai-202204121640"
     },
     "functionAppName": {
-        "value": "mff-test-iot-fa-202204041315"
+        "value": "mff-test-iot-fa-202204121640"
     }
 }
