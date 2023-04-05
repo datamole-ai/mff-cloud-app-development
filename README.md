@@ -1,4 +1,4 @@
-# MFF/NSWI152 - Cloud Application Development - IoT
+# MFF/NSWI152 - Cloud Application Development<br/><br/>Part 2: Data Intensive Systems & IoT backends
 
 There will be 3 lessons in total. During the first 2 lessons, specifics of IoT cloud solutions will be discussed and end-to-end system design for an example IoT case study will be presented in an incremental way. In the end of the 2nd lesson, the assignment for the semestral project will be presented. 
 
@@ -21,21 +21,21 @@ Formal assignment can be found in the [semestral-project-assignment.md](./semest
 
 # Lesson Outline
 
-* **Lesson 1** (12. 04. 2022)
+* **Lesson 1** (11. 04. 2023)
   * Overview of relevant Azure resources - Storage (Blobs, Tables), Functions with HTTP Trigger, Application Insights, ARM templates. 
   * Specifics of cloud development for IoT
   * Example IoT case study (basic solution)
   * Voluntary homework I. 
   * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
 
-* **Lesson 2** (19. 04. 2022)
+* **Lesson 2** (18. 04. 2023)
   * Overview of relevant Azure resources - Event Hub, Functions with Event Hub Trigger.
   * Example IoT case study (advanced solution)
   * Voluntary homework II.
   * Assignment of semestral project.
   * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
 
-* **Lesson 3** (26. 04. 2022)
+* **Lesson 3** (25. 04. 2023)
   * Deadline for semestral project (till the start of the lesson). 
   * Students' presentations of semestral projects.
   * Discussion of reference solution.
