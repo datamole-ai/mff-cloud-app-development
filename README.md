@@ -9,9 +9,9 @@ The assignment will require students to prepare a system design for a simple IoT
 The documents and diagrams representing the solution should be stored in **private GitHub repository** and pushed to the branch `feature/solution`. After that following actions are required:
 
 * Create a  **Pull Request** from `feature/solution` branch to `main` branch 
-* Add `Read` permissions to following GitHub users:
-  * [tomas-pajurek](https://github.com/tomas-pajurek)
-  * [mzatloukal-dtml](https://github.com/mzatloukal-dtml)
+* Add `Read` permissions on the repository to the following GitHub users:
+  * Tomáš Pajurek ([tomas-pajurek](https://github.com/tomas-pajurek))
+  * Michal Zatloukal ([mzatloukal-dtml](https://github.com/mzatloukal-dtml))
 * Send email to `mff-nswi152@datamole.ai`
 
 This process will enable smooth delivery of feedback via comments.
