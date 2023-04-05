@@ -11,7 +11,6 @@ The documents and diagrams representing the solution should be stored in **priva
 * Create a  **Pull Request** from `feature/solution` branch to `main` branch 
 * Add `Read` permissions to following GitHub users:
   * [tomas-pajurek](https://github.com/tomas-pajurek)
-  * [jmasek-dtml](https://github.com/jmasek-dtml)
   * [mzatloukal-dtml](https://github.com/mzatloukal-dtml)
 * Send email to `mff-nswi152@datamole.ai`
 
