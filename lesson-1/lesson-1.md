@@ -12,12 +12,13 @@
 
 ## Cloud-based development of IoT solutions
 
-### Benefits cloud compared to on-premises solutions
+### Benefits of cloud solutions compared to on-premises solutions
 
 #### Prototyping & Incremental development
 
 * New ideas can be tested immediately without up-front investments and delays.
 * Infrastructure for the applications can be added just-in-time.
+  * Including e.g. GPUs, NVMes, SGX/SEV.
 
 #### System architecture changes
 
@@ -33,6 +34,14 @@
 
 * Capacity of the system can be adjusted/scaled to current demand.
 * The scaling is very flexible and can be even on the less-than-hourly basis.
+
+### Drawbacks of cloud solutions compared to on-premises solutions
+
+#### Price
+
+* Renting bare-metal HW can be significantly cheaper.
+
+#### Data residency & security
 
 ### Many point of views on IoT solutions
 
