@@ -263,7 +263,7 @@ to
 
 ```pwsh
 cd iot-usecase-1/AzureFunctions
-func azure functionApp publish "mff-iot-example-fa"
+func azure functionApp publish "mff-iot-example-fa" --csharp
 ```
 
 In the output, you will receive URIs of each azure function. Put them down.
