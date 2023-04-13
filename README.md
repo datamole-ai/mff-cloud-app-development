@@ -18,6 +18,8 @@ This process will enable smooth delivery of feedback via comments.
 
 Formal assignment can be found in the [semestral-project-assignment.md](./semestral-project-assignment.md) file.
 
+The assignment must be **<u>completed</u>** till the end of June 2023. Please take into an account that we need a few days to check your assignment and that we might ask you to do some additional improvements. 
+
 # Lesson Outline
 
 * **Lesson 1** (11. 04. 2023)
