@@ -30,6 +30,10 @@
 
 ### Azure Functions (Event Hub Trigger)
 
+* Differences and similarities to HTTP trigger.
+* Checkpointing.
+* Retries.
+
 # Problem
 
 The situation has changed in the following way: 
