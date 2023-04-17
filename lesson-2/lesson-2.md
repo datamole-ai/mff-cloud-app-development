@@ -38,7 +38,7 @@
 
 The situation has changed in the following way: 
 - The business is thriving and the number of smart warehouses is about to increase from one to a hundred.
-- The client request a simple anomaly detection tool.
+- The clients request a simple anomaly detection tool.
 
 The architecture would need to adjust at multiple levels.
 
