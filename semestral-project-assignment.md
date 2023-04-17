@@ -19,6 +19,7 @@ Design an system/solution architecture of a cloud system for collecting logs fro
 * The specific configuration options of individual Azure services does not have to be discussed (but details are of course very welcomed).
 * Use any drawing tool and text format you are comfortable with to capture the resulting architecture.
     * We recommend https://diagrams.net and Markdown files.
+* For all diagrams, make sure to also provide textual descriptions for data flows, dependencies, data schemas, assumptions, etc.
 
 ## Scenario
 
