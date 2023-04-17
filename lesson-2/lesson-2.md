@@ -2,8 +2,30 @@
 
 ## Overview of relevant Azure resources
 
-* Azure Event Hubs
-* Azure Functions (Event Hub Trigger)
+### Messaging
+
+* Why messaging?
+  * Improves scalability.
+  * Improves resiliency.
+  * Might help reducing architectural complexity.
+    * Publish-subscribe.
+  * Might be more difficult to implement correctly.
+
+* Azure Service Bus vs. Azure Event Hubs
+
+| Traditional message brokers (Azure Service Bus) | Log-based queues (Azure Event Hubs) |
+| -------------- | -------------- |
+| Very smart piece of infrastructure. | Acts more like a simple storage for sequential data. |
+| A lot of features (deduplication, TTL, dead-lettering, routing) | Only a few features. |
+| Consumers are more reactive. | Consumers are more proactive. 
+| Broker is responsible for keeping track of completed messages. | Consumer is responsible for keeping track of completed messages. |
+| Lower throughput. | Higher throughput. |
+| Not great horizontal scalability. | Very good horizontal scalability (partitioning). |
+| In-order processing not possible (typically). | In-order processing possible. |
+| RabbitMQ,  Azure Service Bus, Amazon SQS,  JMS | Apache Kafka, Azure Event Hub, Amazon Kinesis |
+
+
+### Azure Functions (Event Hub Trigger)
 
 # Problem
 
