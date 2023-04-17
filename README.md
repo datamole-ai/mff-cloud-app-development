@@ -4,7 +4,7 @@ There will be 3 lessons in total. During the first 2 lessons, specifics of IoT c
 
 # Semestral project
 
-The assignment will require students to prepare a system design for a simple IoT case study. Students are expected to deliver the solution for the assignment in form of text documents and diagrams.
+The assignment will require students to prepare a system design for a simple IoT case study. Students are expected to deliver the solution for the assignment in form of text documents and diagrams. Students can work on the assignment individually or in pairs. In case that the assignment is submitted two students, make sure to include both names in the email.
 
 The documents and diagrams representing the solution should be stored in **private GitHub repository** and pushed to the branch `feature/solution`. After that following actions are required:
 
@@ -12,7 +12,8 @@ The documents and diagrams representing the solution should be stored in **priva
 * Add `Read` permissions on the repository to the following GitHub users:
   * Tomáš Pajurek ([tomas-pajurek](https://github.com/tomas-pajurek))
   * Michal Zatloukal ([mzatloukal-dtml](https://github.com/mzatloukal-dtml))
-* Send email to `mff-nswi152@datamole.ai`
+* Send email to `mff-nswi152@datamole.ai`.
+
 
 This process will enable smooth delivery of feedback via comments.
 
