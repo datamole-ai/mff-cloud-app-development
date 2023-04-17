@@ -13,6 +13,9 @@
 
 * Azure Service Bus vs. Azure Event Hubs
 
+![Traditional message broker vs. log-based queues](./imgs/messaging.png "Traditional message broker vs. log-based queues")
+
+
 | Traditional message brokers (Azure Service Bus) | Log-based queues (Azure Event Hubs) |
 | -------------- | -------------- |
 | Very smart piece of infrastructure. | Acts more like a simple storage for sequential data. |
