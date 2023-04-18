@@ -5,6 +5,7 @@
 ### Messaging
 
 * Why messaging?
+  * Components decoupling
   * Improves scalability.
   * Improves resiliency.
   * Might help reducing architectural complexity.
