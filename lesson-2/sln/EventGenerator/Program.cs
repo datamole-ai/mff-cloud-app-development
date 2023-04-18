@@ -64,7 +64,7 @@ namespace EventGenerator
                     {
                         LocationFrom = a,
                         LocationTo = b,
-                        TimeSpentSeconds = secondsRandom.Next(0, 100),
+                        TransportDurationSec = secondsRandom.Next(0, 100),
                         ObjectId = objectId,
                         TranportedDateTime = DateTimeOffset.Now,
                         WarehouseId = warehouseId

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureFunctions", "AzureFunctions\AzureFunctions.csproj", "{660D248B-6007-40F6-8318-B82CDB31A0D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventGenerator", "EventGenerator\EventGenerator.csproj", "{6496D107-A6DD-4D3C-9EA0-0229F86ED2AF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{660D248B-6007-40F6-8318-B82CDB31A0D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{660D248B-6007-40F6-8318-B82CDB31A0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{660D248B-6007-40F6-8318-B82CDB31A0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{660D248B-6007-40F6-8318-B82CDB31A0D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6496D107-A6DD-4D3C-9EA0-0229F86ED2AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6496D107-A6DD-4D3C-9EA0-0229F86ED2AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6496D107-A6DD-4D3C-9EA0-0229F86ED2AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6496D107-A6DD-4D3C-9EA0-0229F86ED2AF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {059F9B4D-3102-46AD-8E54-C8FB537A4CCC}
+	EndGlobalSection
+EndGlobal
