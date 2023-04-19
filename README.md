@@ -19,7 +19,7 @@ This process will enable smooth delivery of feedback via comments.
 
 Formal assignment can be found in the [semestral-project-assignment.md](./semestral-project-assignment.md) file.
 
-The assignment must be **<u>completed</u>** till the end of June 2023. Please take into an account that we need a few days to check your assignment and that we might ask you to do some additional improvements. 
+The assignment must be **<u>completed</u>** till the end of June 2023. Please take into an account that we need a few days to check your assignment and that we might ask you to do some additional improvements. This year, there was miscommunication regarding the deadline for completion during lessons. However, information in this paragraph is the correct one. 
 
 # Lesson Outline
 
@@ -38,7 +38,7 @@ The assignment must be **<u>completed</u>** till the end of June 2023. Please ta
   * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
 
 * **Lesson 3** (25. 04. 2023)
-  * Deadline for semestral project (till the start of the lesson). 
+  * <strike>Deadline for semestral project (till the start of the lesson). </strike>
   * Students' presentations of semestral projects.
   * Discussion of reference solution.
   * Advanced topics.
