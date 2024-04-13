@@ -1,5 +1,3 @@
-using System;
-
 namespace AzureFunctions.Models;
 
 public record Transport(
@@ -7,6 +5,6 @@ public record Transport(
     DateTimeOffset TransportedAt,
     string LocationFrom,
     string LocationTo,
-    long TimeSpentSeconds,
+    long TransportDurationSec,
     string FacilityId,
     string DeviceId);

@@ -121,7 +121,7 @@ They want to consume the data via HTTP API from their auditing service.
 
 ### Resulting design
 
-![Design](./imgs/diagram_1.svg)
+![Design](./imgs/diagram_1.png)
 
 
 ## Components
@@ -143,27 +143,31 @@ Request Body:
 
 ```json
 {
-  "objectId": "electronics-box-1",
-  "transportedDateTime": "2022-04-05T15:01:02Z",
-  "locationFrom": "rack-25",
-  "locationTo": "rack-35",
-  "transportDurationSec": 31
+  "parcelId": "sf546ad465asd",
+  "facilityId": "prague-e12",
+  "transportedAt": "2022-04-05T15:01:02Z",
+  "locationFrom": "in-25",
+  "locationTo": "out-35",
+  "transportDurationSec": 31,
+  "deviceId": "sorter-1654345"
 }
 ```
 
 Response Code:
 
-- `202 Accepted` - Event was successfully stored.
+- `201 Created` - Event was successfully stored.
 - `400 Bad Request` - Body is not in the correct form.
 
 Response Body: None
 
 ### Reporter
 
+#### Daily Statistics
+
 Request Method: `GET`
 
 Request Query Parameters: 
-- `day`- a day for which the statistics are calculated in form of `yyyy-MM-dd`
+- `date`- a day for which the statistics are calculated in form of `yyyy-MM-dd`
 
 Request Body: None
 
@@ -179,6 +183,37 @@ Response Body:
   "day": "20220405",
   "totalTransported": 42,
   "avgDurationOfTransportationSec": 40.2,
+}
+```
+
+#### Transport Statistics
+
+Request Method: `GET`
+
+Request Query Parameters: 
+- `date`- a day of transportation in form of `yyyy-MM-dd`
+- `facilityId`- name of the sorting facility
+- `parcelId`- id of the parcel
+
+Request Body: None
+
+Response Code
+- `200 OK` - Statistics calculated and returned in the body
+- `204 No Content` - No events for the given day exists
+- `400 Bad Request` - The query parameter `day` is not correct
+
+Response Body:
+
+```json
+{
+  "transportedDate": "2022-04-05",
+  "facilityId": "prague",
+  "parcelId": "123",
+  "transportedAt": "2022-04-05T15:01:02+00:00",
+  "locationFrom": "in-25",
+  "locationTo": "out-35",
+  "timeSpentSeconds": 31,
+  "deviceId": "sorter-1654345"
 }
 ```
 
