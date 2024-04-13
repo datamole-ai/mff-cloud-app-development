@@ -21,7 +21,7 @@ public class TransportsRepository(TransportsDbContext dbContext)
         );
     }
 
-    public async Task<IList<TransportEntity>> GetTransportsAsync(DateOnly date)
+    public async Task<IList<TransportEntity>> GetTransportsByDateAsync(DateOnly date)
     {
         return await dbContext.Transports.Where(transport => transport.TransportedDate == date).ToListAsync();
     }
