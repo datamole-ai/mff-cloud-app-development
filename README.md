@@ -11,7 +11,7 @@ The documents and diagrams representing the solution should be stored in **priva
 * Create a  **Pull Request** from `feature/solution` branch to `main` branch 
 * Add `Read` permissions on the repository to the following GitHub users:
   * Tomáš Pajurek ([tomas-pajurek](https://github.com/tomas-pajurek))
-  * Michal Zatloukal ([michal-zatloukal](https://github.com/michal-zatloukal))
+  * David Nepožitek ([DavidNepozitek](https://github.com/DavidNepozitek))
 * Send email to `mff-nswi152@datamole.ai`.
 
 
@@ -23,24 +23,32 @@ The assignment must be **<u>completed</u>** till the end of June 2023. Please ta
 
 # Lesson Outline
 
-* **Lesson 1** (11. 04. 2023)
-  * Overview of relevant Azure resources - Storage (Blobs, Tables), Functions with HTTP Trigger, Application Insights, ARM templates. 
+* **Lesson 1** (25. 04. 2024)
+  * Overview of relevant Azure resources - Azure SQL, Azure Functions with HTTP trigger, ARM Templates. 
   * Specifics of cloud development for IoT
-  * Example IoT case study (basic solution)
-  * Voluntary homework I. 
+  * Example IoT case study
   * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
 
-* **Lesson 2** (18. 04. 2023)
-  * Overview of relevant Azure resources - Event Hub, Functions with Event Hub Trigger.
-  * Example IoT case study (advanced solution)
-  * Voluntary homework II.
-  * Assignment of semestral project.
+* **Lesson 2** (02. 05. 2024)
+  * Overview of relevant Azure resources - Storage (Tables, Blobs), App Service.
+  * Example IoT case study, Part II
   * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
 
-* **Lesson 3** (25. 04. 2023)
-  * <strike>Deadline for semestral project (till the start of the lesson). </strike>
+* **Lesson 3** (09. 05. 2024)
+  * Overview of relevant Azure resources - Event Hubs, Service Bus, Azure Functions with Event Hub trigger.
+  * Example IoT case study, Part III
+  * Assignment of semestral project.
+
+
+
+* **Lesson 4** (16. 05. 2024)
+  * Observability
+  * OpenTelemetry
+  * Instrumentation and Troubleshooting of Cloud Services
+
+
+* **Lesson 5** (23. 05. 2024)
   * Students' presentations of semestral projects.
-  * Discussion of reference solution.
   * Advanced topics.
   * For more details visit [semestral-project-assignment.md](./semestral-project-assignment.md).
 
@@ -61,7 +69,7 @@ The assignment must be **<u>completed</u>** till the end of June 2023. Please ta
   * Visual Studio Code
   * Rider
 * Azure subscription
-* .NET 6 SDK
+* .NET 8 SDK
 * [Azure Function Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local#v2)
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 * [Azure Storage Explorer (if you want read a table by yourself)](https://azure.microsoft.com/en-us/features/storage-explorer/)
@@ -73,7 +81,7 @@ Tooling test:
 * `func --version` to check that the Azure Functions Core Tools.
 * `az --version` to check that the Azure CLI version is 2.34 or later.
 * `az account list` 
-* `dotnet --list-sdks` to check that .NET Core SDK 6 is installed. 
+* `dotnet --list-sdks` to check that .NET 8 SDK is installed. 
 
 ## Recommended resources
 
@@ -89,4 +97,6 @@ Tooling test:
   * [Terminology](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-features)
   * [Scaling](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-scalability)
   * [Availability/Consistency](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-availability-and-consistency?tabs=dotnet)
+* [OpenTelemetry Docs](https://opentelemetry.io/docs/)
 * Kleppmann, M. (2017). **Designing Data-Intensive Applications**. O'Reilly Media, Inc. ISBN: 978-1-4493-7332-0 
+* Charity Majors, Liz Fong-Jones, George Miranda (2022). **Observability Engineering**. O'Reilly Media, Inc. ISBN: 9781492076445
