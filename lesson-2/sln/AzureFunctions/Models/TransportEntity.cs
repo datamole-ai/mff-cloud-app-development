@@ -1,5 +1,3 @@
-using System;
-
 namespace AzureFunctions.Models;
 
 public record TransportEntity(
@@ -19,6 +17,6 @@ public record TransportEntity(
             TransportedAt: transport.TransportedAt,
             LocationFrom: transport.LocationFrom,
             LocationTo: transport.LocationTo,
-            TimeSpentSeconds: transport.TimeSpentSeconds,
+            TimeSpentSeconds: transport.TransportDurationSec,
             DeviceId: transport.DeviceId);
 }

@@ -1,8 +1,6 @@
-using System;
-  
 namespace AzureFunctions.Models;
 
 public record DayStatistics(
-    DateTimeOffset Day,
+    DateOnly Date,
     int TotalTransportedCount,
     double AverageTransportationTime);
