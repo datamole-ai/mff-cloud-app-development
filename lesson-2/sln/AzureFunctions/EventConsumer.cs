@@ -8,35 +8,13 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureFunctions
 {
-    public class EventConsumer
+    public class EventConsumer(TransportsRepository transportsRepository, ILogger<EventConsumer> logger)
     {
-        private readonly TransportRepository _transportRepository;
-        private readonly ILogger<EventConsumer> _logger;
-        public EventConsumer(
-            TransportRepository storeTransportService,
-            ILogger<EventConsumer> logger
-            )
-        {
-            if (storeTransportService is null)
-            {
-                throw new ArgumentNullException(nameof(storeTransportService));
-            }
-
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            _transportRepository = storeTransportService;
-            _logger = logger;
-        }
-
         [FunctionName("EventConsumer")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
@@ -47,7 +25,7 @@ namespace AzureFunctions
                 var str = await req.ReadAsStringAsync();
                 if (string.IsNullOrEmpty(str))
                 {
-                    _logger.LogError("empty body");
+                    logger.LogError("empty body");
 
                     return new BadRequestResult();
                 }
@@ -55,29 +33,20 @@ namespace AzureFunctions
             }
             catch (Exception e)
             {
-                _logger.LogError("Invalid request body: {error}", e);
+                logger.LogError("Invalid request body: {error}", e);
                 return new BadRequestResult();
             }
 
-            if (ValidateRecord(record))
-            {
-                _logger.LogError("Invalid record properties");
-                return new BadRequestResult();
-            }
+            // if (ValidateRecord(record))
+            // {
+            //     logger.LogError("Invalid record properties");
+            //     return new BadRequestResult();
+            // }
 
-            await _transportRepository.StoreAsync(record);
+            await transportsRepository.SaveTransportAsync(record);
 
-            _logger.LogInformation("Request successfully processed");
+            logger.LogInformation("Request successfully processed");
             return new AcceptedResult();
         }
-
-        private static bool ValidateRecord(Transport record) =>
-            record is null
-            || string.IsNullOrEmpty(record.LocationFrom)
-            || string.IsNullOrEmpty(record.LocationTo)
-            || string.IsNullOrEmpty(record.ObjectId)
-            || string.IsNullOrEmpty(record.WarehouseId)
-            || !Regex.IsMatch(record.WarehouseId, "[A-Za-z0-9-_]{12,64}")
-            || !record.TransportDurationSec.HasValue;
     }
 }

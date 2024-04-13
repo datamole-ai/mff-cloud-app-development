@@ -1,26 +1,12 @@
 using System;
-using System.Text.Json.Serialization;
 
-namespace AzureFunctions.Models
-{
-    public class Transport
-    {
-        [JsonPropertyName("locationFrom")]
-        public string LocationFrom { get; set; } = null!;
+namespace AzureFunctions.Models;
 
-        [JsonPropertyName("locationTo")]
-        public string LocationTo { get; set; } = null!;
-
-        [JsonPropertyName("transportDurationSec")]
-        public double? TransportDurationSec { get; set; }
-
-        [JsonPropertyName("objectId")]
-        public string ObjectId { get; set; } = null!;
-
-        [JsonPropertyName("warehouseId")]
-        public string WarehouseId { get; set; } = null!;
-
-        [JsonPropertyName("transportedDateTime")]
-        public DateTimeOffset TranportedDateTime { get; set; }
-    }
-}
+public record Transport(
+    string ParcelId,
+    DateTimeOffset TransportedAt,
+    string LocationFrom,
+    string LocationTo,
+    long TimeSpentSeconds,
+    string FacilityId,
+    string DeviceId);
