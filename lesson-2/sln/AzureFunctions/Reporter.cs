@@ -1,15 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using AzureFunctions.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
@@ -17,20 +13,13 @@ using Newtonsoft.Json;
 
 namespace AzureFunctions
 {
-    public class Reporter
+    public class Reporter(
+        ReportRepository ReportRepository,
+        ILogger<Reporter> Logger)
     {
-        private readonly ReportRepository _reportRepository;
-        private readonly ILogger<Reporter> _logger;
         private const string _dayParamName = "day";
         private const string _warehouseParamName = "warehouse";
 
-        public Reporter(
-            ReportRepository reportRepository,
-            ILogger<Reporter> logger)
-        {
-            _reportRepository = reportRepository ?? throw new ArgumentNullException(nameof(reportRepository));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
         [FunctionName("Reporter")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
         {

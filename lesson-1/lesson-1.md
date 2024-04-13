@@ -2,12 +2,9 @@
 
 ## Overview of relevant Azure resources
 
-* [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/)
-  * [Blobs](https://docs.microsoft.com/en-us/azure/storage/blobs/)
-  * [Tables](https://docs.microsoft.com/en-us/azure/storage/tables/)
+* [Azure SQL Database](https://learn.microsoft.com/en-us/azure/azure-sql/database)
 * [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
   * HTTP Trigger
-* [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview/)
 * [Azure Resource Manager (ARM) Templates](https://docs.microsoft.com/en-us/azure/templates/)
 
 ## Cloud-based development of IoT solutions
@@ -87,15 +84,19 @@
 
 ## Case study problem statement
 
+Your client operates a delivery company with five sorting facilities. In these facilities, robots retrieve parcels from the inbound zones and transport them to the outbound zones, where they are prepared for the next stages of delivery. The client wants to keep track of the parcel movement within the facilities and get daily reports.
 
-We will start simple.
+**Example:**
 
-The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
+Robot R-1 moves parcel 4242 from inbound zone I-12 to outbound zone O-25 in 40 seconds .
 
-### Examples
-* Electronics box number 1 moved from Rack 25 to Rack 35.
-* Clothes box number 45 moved from Rack 34 to Rack 20.
-* How many objects were moved during the day and what was an average transportation time?
+**The client needs answers for the following:**
+
+- What was the daily volume of parcels transported within the facilities?
+- What was the daily average transportation time?
+- How did the parcel move within a particular facility?
+
+They want to consume the data via HTTP API from their auditing service.
 
 ### Ideas - discussion
 ```
@@ -120,7 +121,7 @@ The client has one warehouse in which objects are moved from one location to ano
 
 ### Resulting design
 
-![Design](./imgs/diagram_1.drawio.png)
+![Design](./imgs/diagram_1.svg)
 
 
 ## Components
