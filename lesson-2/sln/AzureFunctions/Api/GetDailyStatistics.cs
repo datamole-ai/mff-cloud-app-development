@@ -22,7 +22,7 @@ public class GetDailyStatistics(AggregationService aggregationService)
         return await aggregationService.GetDayStatisticsAsync(date) switch
         {
             { } dayStatistics => new OkObjectResult(dayStatistics),
-            _ => new NotFoundResult()
+            _ => new NoContentResult()
         };
     }
 }
