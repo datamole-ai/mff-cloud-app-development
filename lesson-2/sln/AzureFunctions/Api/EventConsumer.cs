@@ -15,7 +15,7 @@ public class EventConsumer(TransportsRepository transportsRepository, ILogger<Ev
 {
     [Function("EventConsumer")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req, [FromBody] Transport? transport, FunctionContext context)
+        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req, [FromBody] Transport? transport)
     {
         if (transport is null)
         {

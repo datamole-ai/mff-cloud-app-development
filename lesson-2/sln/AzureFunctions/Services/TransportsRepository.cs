@@ -8,7 +8,17 @@ public class TransportsRepository(TransportsDbContext dbContext)
 {
     public async Task SaveTransportAsync(Transport transport)
     {
-        dbContext.Transports.Add(TransportEntity.FromTransport(transport));
+        var transportEntity = TransportEntity.FromTransport(transport);
+
+        if (await dbContext.Transports.FindAsync(transportEntity.TransportedDate, transportEntity.FacilityId, transportEntity.ParcelId) is not null)
+        {
+            dbContext.Transports.Update(transportEntity);
+        }
+        else
+        {
+            dbContext.Transports.Add(transportEntity);
+        }
+
         await dbContext.SaveChangesAsync();
     }
 
