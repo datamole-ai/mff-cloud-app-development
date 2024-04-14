@@ -94,7 +94,7 @@ Robot R-1 moves parcel 4242 from inbound zone I-12 to outbound zone O-25 in 40 s
 
 - What was the daily volume of parcels transported within the facilities?
 - What was the daily average transportation time?
-- How did the parcel move within a particular facility?
+- How did the parcel 4242 move within a facility F-1 on a day 20-04-2024?
 
 They want to consume the data via HTTP API from their auditing service.
 
@@ -186,7 +186,7 @@ Response Body:
 }
 ```
 
-#### Transport Statistics
+#### Transport Information
 
 Request Method: `GET`
 
@@ -218,8 +218,6 @@ Response Body:
 ```
 
 ## Implementation
-
-In this section, the necessary Azure resources will be deployed and a skeleton of the .NET solution will be developed. Actual implementation of the .NET solution is left up to the students as homework.
 
 
 ### Deploy the infrastructure
@@ -255,14 +253,6 @@ az deployment group create `
   --parameters "resources.azrm.parameters.json"
 ```
 
-After it's created, you will see the following lines in the output
-```
-storageAccountConnectionString  String
-  DefaultEndpointsProtocol=https;AccountName=<your-unique-storage-account-name>;EndpointSuffix=core.windows.net;AccountKey=...       
-```
-Remember it, we will need it for local debugging later.
-
-
 ### Create Azure Functions from a template
 
 Prerequisites: [Azure Functions Core](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools)
@@ -272,7 +262,7 @@ Create Azure Function .NET project ([docs here](https://docs.microsoft.com/en-us
 ```pwsh
 mkdir ./iot-usecase-1
 cd ./iot-usecase-1
-func init "AzureFunctions" --worker-runtime "dotnetIsolated"
+func init "AzureFunctions" --worker-runtime "dotnet-isolated" --target-framework "net8.0"
 ```
 
 Create the individual Azure Functions
@@ -284,22 +274,11 @@ func new --name "Reporter" --template "HTTP trigger" --authlevel "function"
 func new --name "EventConsumer" --template "HTTP trigger" --authlevel "function"
 ```
 
-When prompted, choose `dotnet` runtime.
-
-After running those commands, change the Azure functions version value in .csproj file from:
-```
-<AzureFunctionsVersion>v3</AzureFunctionsVersion>
-```
-to
-```
-<AzureFunctionsVersion>v4</AzureFunctionsVersion>
-```
-
 ## Publish Azure Functions
 
 ```pwsh
 cd iot-usecase-1/AzureFunctions
-func azure functionApp publish "mff-iot-example-fa" --csharp
+func azure functionApp publish "mff-iot-example-fa" --show-keys
 ```
 
 In the output, you will receive URIs of each azure function. Put them down.
@@ -356,171 +335,6 @@ curl -X GET "https://mff-iot-example-fa.azurewebsites.net/api/reporter?code=/<fu
 ```
 
 Log output of each function can be read via Portal -> Function App `mff-iot-example-fa` -> Functions -> Select `Reporter` -> Monitor -> Logs tab
-
-## Check App Insights
-
-Navigate to the app insights resource `mff-iot-example-ai`
-
-Click at "Server Requests" metrics on the right side of the page.
-
-See the requests that came to your function. 
-
-In production, App Insights are critical, you can create rules that fire alert and notifies you if something goes wrong.
-- Clients stopped sending data
-- Significant increase of BAD REQUEST responses after API upgrade -> it was not as backwards compatible as expected.
-- Some Internal Server Error -> reveals bugs
-
-## Homework - Implement the HTTP API functions
-
-For manipulating azure table, add package
-`dotnet add package Azure.Data.Tables`
-
-Create model of the HTTP Request 
-```cs
-public class Transport
-{
-  [JsonPropertyName("objectId")]
-  public string ObjectId { get; set; }
-  
-  [JsonPropertyName("transportedDateTime")]
-  public DateTimeOffset TranportedDateTime{get;set;}
- 
-  [JsonPropertyName("locationFrom")]
-  public string LocationFrom { get; set; }
-
-  [JsonPropertyName("locationTo")]
-  public string LocationTo { get; set; }
-
-  [JsonPropertyName("transportDurationSec")]
-  public double? TransportDurationSec { get; set; }
-}
-```
-Parse the incoming request in the `/sln/AzureFunctions/EventConsumer.cs` file created by the azure function template.
-```cs
-[FunctionName("EventConsumer")]
-public async Task<IActionResult> Run(
-    [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
-{
-    Transport record;
-    try
-    {
-        var str = await req.ReadAsStringAsync();
-        if (string.IsNullOrEmpty(str))
-        {
-            _logger.LogError("empty body");
-
-            return new BadRequestResult();
-        }
-        record = JsonSerializer.Deserialize<Transport>(str)!;
-    }
-    catch (Exception e)
-    {
-        _logger.LogError("Invalid request body: {error}", e);
-        return new BadRequestResult();
-    }
-}
-```
-Create a storage client. The environment property will be added later.
-
-```cs
-var storageConnectionString = Environment.GetEnvironmentVariable("StorageAccountConnectionString");
-var tableName = "transports";
-
-var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-var tableClient = new TableClient(connectionString, tableName);
-```
-
-Create an TableEntity
-
-```cs
-    public class TransportEntity : ITableEntity
-    {
-        public static string PartitionKeyFormat { get; set; } = "yyyyMMdd";
-
-        public TransportEntity()
-        {
-
-        }
-
-        public TransportEntity(
-            string transportId,
-            string warehouseId,
-            string objectId,
-            DateTimeOffset transportedDateTimeOffset,
-            double timeSpentSeconds,
-            string locationFrom,
-            string locationTo
-            )
-        {
-            PartitionKey = transportedDateTimeOffset.ToString("yyyyMMdd");
-            RowKey = warehouseId + ":" + transportId;
-
-            TransportedDateTime = transportedDateTimeOffset.ToString("o");
-
-            TransportId = transportId;
-            WarehouseId = warehouseId;
-            ObjectId = objectId;
-            TimeSpentSeconds = timeSpentSeconds;
-            LocationFrom = locationFrom;
-            LocationTo = locationTo;
-        }
-
-        public string PartitionKey { get; set; } = null!;
-        public string RowKey { get; set; } = null!;
-        public DateTimeOffset? Timestamp { get; set; }
-        public ETag ETag { get; set; }
-
-        public string TransportId { get; set; } = null!;
-        public string WarehouseId { get; set; } = null!;
-        public string ObjectId { get; set; } = null!;
-        public double TimeSpentSeconds { get; set; }
-        public string LocationFrom { get; set; } = null!;
-
-        public string LocationTo { get; set; } = null!;
-
-        public DateTimeOffset TransportedDateTimeOffset() => DateTimeOffset.Parse(TransportedDateTime, CultureInfo.InvariantCulture);
-
-        public string TransportedDateTime { get; set; } = null!;
-    }
-}
-```
-
-Add transport entity to the table
-```cs
-var transportId = Guid.NewGuid().ToString();
-var entity = new TransportEntity(
-    transportId,
-    transport.ObjectId,
-    transport.TranportedDateTime,
-    transport.TimeSpentSeconds.Value,
-    transport.LocationFrom,
-    transport.LocationTo
-);
-
-await _tableClient.AddEntityAsync(entity);
-```
-
-And return response
-```
-return req.CreateResponse(HttpStatusCode.Accepted);
-```
-
-**NOTE**: The code above can be used for prototyping but it is not ready for production for the following reasons:
-
-- No requests checks what so ever
-  - Body can be empty, contain invalid elements or the elements can have invalid values
-- No exception handling
-- Creating new instances of the table client with each requests
-
-### Implement Client
-
-Using the commands above
-- create table client
-- read all required transport record as transport entities 
-- map them to Transport models
-- return them to the client
-
-You can get inspired how to address the issue in the example solution that will be presented the next time.
 
 ### Local Test
 

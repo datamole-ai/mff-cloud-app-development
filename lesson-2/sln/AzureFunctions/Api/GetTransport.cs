@@ -16,7 +16,6 @@ public class GetTransport(TransportsRepository transportsRepository)
         req.Query.TryGetValue("facilityId", out var facilityIdQuery);
         req.Query.TryGetValue("parcelId", out var parcelIdQuery);
 
-
         if (!DateOnly.TryParseExact(dateQuery, "yyyy-MM-dd", out var date) || string.IsNullOrEmpty(facilityIdQuery) || string.IsNullOrEmpty(parcelIdQuery))
         {
             return new BadRequestResult();
