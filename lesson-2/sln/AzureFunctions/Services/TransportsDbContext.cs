@@ -10,7 +10,6 @@ public class TransportsDbContext(DbContextOptions<TransportsDbContext> options) 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<TransportEntity>()
             .HasKey(transport => new { transport.TransportedDate, transport.FacilityId, transport.ParcelId });
     }

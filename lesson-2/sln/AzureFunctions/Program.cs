@@ -14,6 +14,7 @@ hostBuilder.ConfigureServices((context, collection) =>
     collection.AddDbContext<TransportsDbContext>(optionsBuilder =>
     {
         optionsBuilder.UseSqlServer(context.Configuration.GetValue<string>("TransportsDbConnectionString"));
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     });
 
     collection.AddScoped<TransportsRepository>();

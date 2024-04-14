@@ -240,7 +240,7 @@ First thing is to create a new resource group. In the following command, replace
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Edit the `storageAccountName` value in the `lesson-1/arm/resources.azrm.parameters.json`.
+Edit the values in the `lesson-1/arm/resources.azrm.parameters.json` so they are unique.
 
 Then, deploy the infrastructure defined in `lesson-1/arm/resources.azrm.json` with the following command.
 
@@ -250,7 +250,19 @@ az deployment group create `
   --name "deploy-mff-task-components" `
   --resource-group "mff-lectures" `
   --template-file "resources.azrm.json" `
-  --parameters "resources.azrm.parameters.json"
+  --parameters "resources.azrm.parameters.json" `
+  --parameters adminPassword=<password-to-sql-server>
+```
+
+You should copy the Connection String to the database for local development. It should appear in the output as follows:
+
+```json
+"outputs": {
+  "sqlConnectionString": {
+    "type": "String",
+    "value": "Server=tcp:mff-iot-sql-...database.windows.net,1433;Initial Catalog=transports;User ID=mffAdmin;Password=<password-to-sql-server>;"
+  }
+}
 ```
 
 ### Create Azure Functions from a template
@@ -271,33 +283,73 @@ Create the individual Azure Functions
 cd ./iot-usecase-1/AzureFunctions
 
 func new --name "Reporter" --template "HTTP trigger" --authlevel "function"
-func new --name "EventConsumer" --template "HTTP trigger" --authlevel "function"
+func new --name "GetDailyStatistics" --template "HTTP trigger" --authlevel "function"
+func new --name "GetTransport" --template "HTTP trigger" --authlevel "function"
+
 ```
 
 ## Publish Azure Functions
 
 ```pwsh
 cd iot-usecase-1/AzureFunctions
-func azure functionApp publish "mff-iot-example-fa" --show-keys
+func azure functionApp publish "<name-of-the-functionapp>" --show-keys
 ```
 
 In the output, you will receive URIs of each azure function. Put them down.
 
 ```
-Functions in mff-iot-example-fa:
-    Reporter - [HttpTrigger]
-        Invoke url: https://mff-iot-example-fa.azurewebsites.net/api/reporter?code=<some-code>
-    EventConsumer - [HttpTrigger]
-        Invoke url: https://mff-iot-example-fa.azurewebsites.net/api/eventconsumer?code=<some-code>
+    EventConsumer - [httpTrigger]
+        Invoke url: https://<name-of-the-functionapp>.azurewebsites.net/api/eventconsumer?code=<code>
+
+    GetDailyStatistics - [httpTrigger]
+        Invoke url: https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=<code>
+
+    GetTransport - [httpTrigger]
+        Invoke url: https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=<code>
 ```
 
-## Smoke Test
+You can test the function with your HTTP client of choice:
 
-You can use the uri here. If you didn't put them down, you can get them with the command
-
-```pwsh
-func azure functionapp list-functions "mff-iot-example-fa" --show-keys
 ```
+curl "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=<code>"
+```
+
+## Actual Implementation
+
+### Set up Database Schema
+
+Open [Azure Portal](https://portal.azure.com/) in you browser.
+
+Find the SQL Database resource.
+
+Go to Query Editor in the left panel.
+
+Login using the admin credentials.
+
+Create and execute new query:
+
+```sql
+CREATE TABLE [Transports] (
+    [TransportedDate] date NOT NULL,
+    [FacilityId] nvarchar(255) NOT NULL,
+    [ParcelId] nvarchar(255) NOT NULL,
+    [TransportedAt] datetimeoffset NOT NULL,
+    [LocationFrom] nvarchar(max) NOT NULL,
+    [LocationTo] nvarchar(max) NOT NULL,
+    [TimeSpentSeconds] bigint NOT NULL,
+    [DeviceId] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_Transports] PRIMARY KEY ([TransportedDate], [FacilityId], [ParcelId])
+);
+```
+
+### Set up the Code
+
+You can find the reference implementation in `sln/AzureFunction`. 
+
+Note that it is definitely not production-ready for many reasons (missing error-handling, validations, observability).
+It should rather serve as a minimal example on how to glue the Azure resources and code together.
+
+## Test
 
 ### Event Consumer
 
@@ -306,41 +358,58 @@ Powershell
 $body = @{
   locationFrom="a";
   locationTo="b";
-  transportDurationSec=1;
-  objectId="1";
-  transportedDateTime="2021-04-03T12:34:56"
+  transportDurationSec=30;
+  parcelId="1";
+  transportedAt="2022-04-05T15:01:02Z";
+  deviceId="sorter-123";
+  facilityId="facilityId";
 } | ConvertTo-Json
 
- Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body
+ Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body -ContentType "application/json"
 ```
 
 cURL
 
 ```sh
 curl -X POST -H "Content-Type: application/json" \
-    -d '{"locationFrom": "a", "locationTo":"b", "transportDurationSec":1, "objectId":"1", "transportedDateTime": "2021-04-03T12:34:56"}' \
+    -d '{"parcelId": "12345","facilityId": "prague","transportedAt": "2022-04-05T15:01:02Z", "locationFrom": "in-25",  "locationTo": "out-35",  "transportDurationSec": 50,  "deviceId": "sorter-1654345"
+}' \
     <URI>
 ```
 
-### Reporter 
+### Reporter
+
+#### Daily Statistics
 
 Powershell
 ```pwsh
-Invoke-WebRequest -Uri "https://mff-iot-example-fa.azurewebsites.net/api/reporter?code=/<func_code>&day=20210405"
+Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
 ```
 
 cUrl
 ```sh
-curl -X GET "https://mff-iot-example-fa.azurewebsites.net/api/reporter?code=/<func_code>&day=20210405"
+curl "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
 ```
 
-Log output of each function can be read via Portal -> Function App `mff-iot-example-fa` -> Functions -> Select `Reporter` -> Monitor -> Logs tab
+#### Individual Transport
+
+Powershell
+```pwsh
+Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
+```
+
+cUrl
+```sh
+curl "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
+```
+
+Log output of each function can be read via Portal -> Function App `<name-of-the-functionapp>` -> Functions -> Select the Function -> Monitor -> Logs tab
 
 ### Local Test
 
 **NOTE:** Only http triggered function can be tested locally.
 
-Add the connection string from arm deployment to `local.settings.json`. They will be accessible to the function as enviromental properties.
+Add the connection string from arm deployment to `local.settings.json`. They will be accessible to the function as enviromental variables, the are also automatically loaded to configuration.
 
 ```json
 {
@@ -348,8 +417,8 @@ Add the connection string from arm deployment to `local.settings.json`. They wil
   "Values": {
       "AzureWebJobsStorage": "UseDevelopmentStorage=true",
       "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-      // add this
-      "StorageAccountConnectionString":"<the-connection-string-from-arm>"
+      // Add this:
+      "TransportsDbConnectionString":"<the-connection-string-from-arm>"
   }
 }
 ```
@@ -357,16 +426,23 @@ Add the connection string from arm deployment to `local.settings.json`. They wil
 Then navigate to `<project-root>/sln/AzureFunctions` and [run](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Ccsharp%2Cbash#start)
 
 ```pwsh
-func start --build
+func start
 ```
 
-Then use the requests from the section [Smoke Test](#Smoke-Test)
+Then use the requests from the section [Test](#Test).
 
 ### Storage Check
 
-Open Azure Storage Explorer and log in.
 
-Find the table under your subscription -> Storage Accounts -> `<your-storage-account-name>` -> Tables -> `transports`
+Open [Azure Portal](https://portal.azure.com/) in you browser.
 
-Check that all the records are there.
+Find the SQL Database resource.
+
+Go to Query Editor in the left panel.
+
+Login using the admin credentials.
+
+Find the table: Tables -> dbo.Transports. 
+
+Right-click and select "Select Top 1000 Rows".
 
