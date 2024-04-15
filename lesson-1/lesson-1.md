@@ -2,12 +2,9 @@
 
 ## Overview of relevant Azure resources
 
-* [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/)
-  * [Blobs](https://docs.microsoft.com/en-us/azure/storage/blobs/)
-  * [Tables](https://docs.microsoft.com/en-us/azure/storage/tables/)
+* [Azure SQL Database](https://learn.microsoft.com/en-us/azure/azure-sql/database)
 * [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
   * HTTP Trigger
-* [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview/)
 * [Azure Resource Manager (ARM) Templates](https://docs.microsoft.com/en-us/azure/templates/)
 
 ## Cloud-based development of IoT solutions
@@ -87,17 +84,22 @@
 
 ## Case study problem statement
 
+Your client operates a delivery company with five sorting facilities. In these facilities, robots retrieve parcels from the inbound zones and transport them to the outbound zones, where they are prepared for the next stages of delivery. The client wants to keep track of the parcel movement within the facilities and get daily reports.
 
-We will start simple.
+**Example:**
 
-The client has one warehouse in which objects are moved from one location to another. The client wants to keep track of the object movement and get daily reports. 
+Robot R-1 moves parcel 4242 from inbound zone I-12 to outbound zone O-25 in 40 seconds .
 
-### Examples
-* Electronics box number 1 moved from Rack 25 to Rack 35.
-* Clothes box number 45 moved from Rack 34 to Rack 20.
-* How many objects were moved during the day and what was an average transportation time?
+**The client needs answers for the following:**
+
+- What was the daily volume of parcels transported within the facilities?
+- What was the daily average transportation time?
+- How did the parcel 4242 move within a facility F-1 on a day 20-04-2024?
+
+They want to consume the data via HTTP API from their auditing service.
 
 ### Ideas - discussion
+
 ```
 
 
@@ -120,7 +122,7 @@ The client has one warehouse in which objects are moved from one location to ano
 
 ### Resulting design
 
-![Design](./imgs/diagram_1.drawio.png)
+![Design](./imgs/diagram_1.png)
 
 
 ## Components
@@ -142,27 +144,32 @@ Request Body:
 
 ```json
 {
-  "objectId": "electronics-box-1",
-  "transportedDateTime": "2022-04-05T15:01:02Z",
-  "locationFrom": "rack-25",
-  "locationTo": "rack-35",
-  "transportDurationSec": 31
+  "transportId": "15asd55cvgh",
+  "parcelId": "sf546ad465asd",
+  "facilityId": "prague-e12",
+  "transportedAt": "2022-04-05T15:01:02Z",
+  "locationFrom": "in-25",
+  "locationTo": "out-35",
+  "transportDurationSec": 31,
+  "deviceId": "sorter-1654345"
 }
 ```
 
 Response Code:
 
-- `202 Accepted` - Event was successfully stored.
+- `201 Created` - Event was successfully stored.
 - `400 Bad Request` - Body is not in the correct form.
 
 Response Body: None
 
 ### Reporter
 
+#### Daily Statistics
+
 Request Method: `GET`
 
 Request Query Parameters: 
-- `day`- a day for which the statistics are calculated in form of `yyyy-MM-dd`
+- `date`- a day for which the statistics are calculated in form of `yyyy-MM-dd`
 
 Request Body: None
 
@@ -181,9 +188,39 @@ Response Body:
 }
 ```
 
-## Implementation
+#### Transport Information
 
-In this section, the necessary Azure resources will be deployed and a skeleton of the .NET solution will be developed. Actual implementation of the .NET solution is left up to the students as homework.
+Request Method: `GET`
+
+Request Query Parameters: 
+- `date`- a day of transportation in form of `yyyy-MM-dd`
+- `facilityId`- name of the sorting facility
+- `parcelId`- id of the parcel
+
+Request Body: None
+
+Response Code
+- `200 OK` - Statistics calculated and returned in the body
+- `204 No Content` - No events for the given day exists
+- `400 Bad Request` - The query parameter `day` is not correct
+
+Response Body:
+
+```json
+{
+  "transportedDate": "2022-04-05",
+  "facilityId": "prague",
+  "parcelId": "123",
+  "transportedAt": "2022-04-05T15:01:02+00:00",
+  "locationFrom": "in-25",
+  "locationTo": "out-35",
+  "timeSpentSeconds": 31,
+  "deviceId": "sorter-1654345",
+  "transportId": "15asd55cvgh"
+}
+```
+
+## Implementation
 
 
 ### Deploy the infrastructure
@@ -206,7 +243,7 @@ First thing is to create a new resource group. In the following command, replace
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Edit the `storageAccountName` value in the `lesson-1/arm/resources.azrm.parameters.json`.
+Edit the values in the `lesson-1/arm/resources.azrm.parameters.json` so they are unique.
 
 Then, deploy the infrastructure defined in `lesson-1/arm/resources.azrm.json` with the following command.
 
@@ -216,16 +253,20 @@ az deployment group create `
   --name "deploy-mff-task-components" `
   --resource-group "mff-lectures" `
   --template-file "resources.azrm.json" `
-  --parameters "resources.azrm.parameters.json"
+  --parameters "resources.azrm.parameters.json" `
+  --parameters adminPassword=<password-to-sql-server>
 ```
 
-After it's created, you will see the following lines in the output
-```
-storageAccountConnectionString  String
-  DefaultEndpointsProtocol=https;AccountName=<your-unique-storage-account-name>;EndpointSuffix=core.windows.net;AccountKey=...       
-```
-Remember it, we will need it for local debugging later.
+You should copy the Connection String to the database for local development. It should appear in the output as follows:
 
+```json
+"outputs": {
+  "sqlConnectionString": {
+    "type": "String",
+    "value": "Server=tcp:mff-iot-sql-...database.windows.net,1433;Initial Catalog=transports;User ID=mffAdmin;Password=<password-to-sql-server>;"
+  }
+}
+```
 
 ### Create Azure Functions from a template
 
@@ -236,7 +277,7 @@ Create Azure Function .NET project ([docs here](https://docs.microsoft.com/en-us
 ```pwsh
 mkdir ./iot-usecase-1
 cd ./iot-usecase-1
-func init "AzureFunctions" --worker-runtime "dotnetIsolated"
+func init "AzureFunctions" --worker-runtime "dotnet-isolated" --target-framework "net8.0"
 ```
 
 Create the individual Azure Functions
@@ -245,44 +286,74 @@ Create the individual Azure Functions
 cd ./iot-usecase-1/AzureFunctions
 
 func new --name "Reporter" --template "HTTP trigger" --authlevel "function"
-func new --name "EventConsumer" --template "HTTP trigger" --authlevel "function"
-```
+func new --name "GetDailyStatistics" --template "HTTP trigger" --authlevel "function"
+func new --name "GetTransport" --template "HTTP trigger" --authlevel "function"
 
-When prompted, choose `dotnet` runtime.
-
-After running those commands, change the Azure functions version value in .csproj file from:
-```
-<AzureFunctionsVersion>v3</AzureFunctionsVersion>
-```
-to
-```
-<AzureFunctionsVersion>v4</AzureFunctionsVersion>
 ```
 
 ## Publish Azure Functions
 
 ```pwsh
 cd iot-usecase-1/AzureFunctions
-func azure functionApp publish "mff-iot-example-fa" --csharp
+func azure functionApp publish "<name-of-the-functionapp>" --show-keys
 ```
 
 In the output, you will receive URIs of each azure function. Put them down.
 
 ```
-Functions in mff-iot-example-fa:
-    Reporter - [HttpTrigger]
-        Invoke url: https://mff-iot-example-fa.azurewebsites.net/api/reporter?code=<some-code>
-    EventConsumer - [HttpTrigger]
-        Invoke url: https://mff-iot-example-fa.azurewebsites.net/api/eventconsumer?code=<some-code>
+    EventConsumer - [httpTrigger]
+        Invoke url: https://<name-of-the-functionapp>.azurewebsites.net/api/eventconsumer?code=<code>
+
+    GetDailyStatistics - [httpTrigger]
+        Invoke url: https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=<code>
+
+    GetTransport - [httpTrigger]
+        Invoke url: https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=<code>
 ```
 
-## Smoke Test
+You can test the function with your HTTP client of choice:
 
-You can use the uri here. If you didn't put them down, you can get them with the command
-
-```pwsh
-func azure functionapp list-functions "mff-iot-example-fa" --show-keys
 ```
+curl "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=<code>"
+```
+
+## Actual Implementation
+
+### Set up Database Schema
+
+Open [Azure Portal](https://portal.azure.com/) in you browser.
+
+Find the SQL Database resource.
+
+Go to Query Editor in the left panel.
+
+Login using the admin credentials.
+
+Execute the following query:
+
+```sql
+CREATE TABLE [Transports] (
+    [TransportedDate] date NOT NULL,
+    [FacilityId] nvarchar(255) NOT NULL,
+    [ParcelId] nvarchar(255) NOT NULL,
+    [TransportedAt] datetimeoffset NOT NULL,
+    [LocationFrom] nvarchar(max) NOT NULL,
+    [LocationTo] nvarchar(max) NOT NULL,
+    [TimeSpentSeconds] bigint NOT NULL,
+    [DeviceId] nvarchar(max) NOT NULL,
+    [TransportId] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_Transports] PRIMARY KEY ([TransportedDate], [FacilityId], [ParcelId])
+);
+```
+
+### Set up the Code
+
+You can find the reference implementation in `sln/AzureFunction`. 
+
+Note that it is definitely not production-ready for many reasons (missing error-handling, validations, observability).
+It should rather serve as a minimal example on how to glue the Azure resources and code together.
+
+## Test
 
 ### Event Consumer
 
@@ -291,206 +362,59 @@ Powershell
 $body = @{
   locationFrom="a";
   locationTo="b";
-  transportDurationSec=1;
-  objectId="1";
-  transportedDateTime="2021-04-03T12:34:56"
+  transportDurationSec=30;
+  parcelId="1";
+  transportedAt="2022-04-05T15:01:02Z";
+  deviceId="sorter-123";
+  facilityId="facility-123";
+  transportId="t-4156";
 } | ConvertTo-Json
 
- Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body
+ Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body -ContentType "application/json"
 ```
 
 cURL
 
 ```sh
 curl -X POST -H "Content-Type: application/json" \
-    -d '{"locationFrom": "a", "locationTo":"b", "transportDurationSec":1, "objectId":"1", "transportedDateTime": "2021-04-03T12:34:56"}' \
+    -d '{"parcelId": "12345","facilityId": "prague","transportedAt": "2022-04-05T15:01:02Z", "locationFrom": "in-25",  "locationTo": "out-35",  "transportDurationSec": 50,  "deviceId": "sorter-1654345", "transportId": "t-4156"
+}' \
     <URI>
 ```
 
-### Reporter 
+### Reporter
+
+#### Daily Statistics
 
 Powershell
 ```pwsh
-Invoke-WebRequest -Uri "https://mff-iot-example-fa.azurewebsites.net/api/reporter?code=/<func_code>&day=20210405"
+Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
 ```
 
 cUrl
 ```sh
-curl -X GET "https://mff-iot-example-fa.azurewebsites.net/api/reporter?code=/<func_code>&day=20210405"
+curl "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
 ```
 
-Log output of each function can be read via Portal -> Function App `mff-iot-example-fa` -> Functions -> Select `Reporter` -> Monitor -> Logs tab
+#### Individual Transport
 
-## Check App Insights
-
-Navigate to the app insights resource `mff-iot-example-ai`
-
-Click at "Server Requests" metrics on the right side of the page.
-
-See the requests that came to your function. 
-
-In production, App Insights are critical, you can create rules that fire alert and notifies you if something goes wrong.
-- Clients stopped sending data
-- Significant increase of BAD REQUEST responses after API upgrade -> it was not as backwards compatible as expected.
-- Some Internal Server Error -> reveals bugs
-
-## Homework - Implement the HTTP API functions
-
-For manipulating azure table, add package
-`dotnet add package Azure.Data.Tables`
-
-Create model of the HTTP Request 
-```cs
-public class Transport
-{
-  [JsonPropertyName("objectId")]
-  public string ObjectId { get; set; }
-  
-  [JsonPropertyName("transportedDateTime")]
-  public DateTimeOffset TranportedDateTime{get;set;}
- 
-  [JsonPropertyName("locationFrom")]
-  public string LocationFrom { get; set; }
-
-  [JsonPropertyName("locationTo")]
-  public string LocationTo { get; set; }
-
-  [JsonPropertyName("transportDurationSec")]
-  public double? TransportDurationSec { get; set; }
-}
-```
-Parse the incoming request in the `/sln/AzureFunctions/EventConsumer.cs` file created by the azure function template.
-```cs
-[FunctionName("EventConsumer")]
-public async Task<IActionResult> Run(
-    [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
-{
-    Transport record;
-    try
-    {
-        var str = await req.ReadAsStringAsync();
-        if (string.IsNullOrEmpty(str))
-        {
-            _logger.LogError("empty body");
-
-            return new BadRequestResult();
-        }
-        record = JsonSerializer.Deserialize<Transport>(str)!;
-    }
-    catch (Exception e)
-    {
-        _logger.LogError("Invalid request body: {error}", e);
-        return new BadRequestResult();
-    }
-}
-```
-Create a storage client. The environment property will be added later.
-
-```cs
-var storageConnectionString = Environment.GetEnvironmentVariable("StorageAccountConnectionString");
-var tableName = "transports";
-
-var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-var tableClient = new TableClient(connectionString, tableName);
+Powershell
+```pwsh
+Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
 ```
 
-Create an TableEntity
-
-```cs
-    public class TransportEntity : ITableEntity
-    {
-        public static string PartitionKeyFormat { get; set; } = "yyyyMMdd";
-
-        public TransportEntity()
-        {
-
-        }
-
-        public TransportEntity(
-            string transportId,
-            string warehouseId,
-            string objectId,
-            DateTimeOffset transportedDateTimeOffset,
-            double timeSpentSeconds,
-            string locationFrom,
-            string locationTo
-            )
-        {
-            PartitionKey = transportedDateTimeOffset.ToString("yyyyMMdd");
-            RowKey = warehouseId + ":" + transportId;
-
-            TransportedDateTime = transportedDateTimeOffset.ToString("o");
-
-            TransportId = transportId;
-            WarehouseId = warehouseId;
-            ObjectId = objectId;
-            TimeSpentSeconds = timeSpentSeconds;
-            LocationFrom = locationFrom;
-            LocationTo = locationTo;
-        }
-
-        public string PartitionKey { get; set; } = null!;
-        public string RowKey { get; set; } = null!;
-        public DateTimeOffset? Timestamp { get; set; }
-        public ETag ETag { get; set; }
-
-        public string TransportId { get; set; } = null!;
-        public string WarehouseId { get; set; } = null!;
-        public string ObjectId { get; set; } = null!;
-        public double TimeSpentSeconds { get; set; }
-        public string LocationFrom { get; set; } = null!;
-
-        public string LocationTo { get; set; } = null!;
-
-        public DateTimeOffset TransportedDateTimeOffset() => DateTimeOffset.Parse(TransportedDateTime, CultureInfo.InvariantCulture);
-
-        public string TransportedDateTime { get; set; } = null!;
-    }
-}
+cUrl
+```sh
+curl "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
 ```
 
-Add transport entity to the table
-```cs
-var transportId = Guid.NewGuid().ToString();
-var entity = new TransportEntity(
-    transportId,
-    transport.ObjectId,
-    transport.TranportedDateTime,
-    transport.TimeSpentSeconds.Value,
-    transport.LocationFrom,
-    transport.LocationTo
-);
-
-await _tableClient.AddEntityAsync(entity);
-```
-
-And return response
-```
-return req.CreateResponse(HttpStatusCode.Accepted);
-```
-
-**NOTE**: The code above can be used for prototyping but it is not ready for production for the following reasons:
-
-- No requests checks what so ever
-  - Body can be empty, contain invalid elements or the elements can have invalid values
-- No exception handling
-- Creating new instances of the table client with each requests
-
-### Implement Client
-
-Using the commands above
-- create table client
-- read all required transport record as transport entities 
-- map them to Transport models
-- return them to the client
-
-You can get inspired how to address the issue in the example solution that will be presented the next time.
+Log output of each function can be read via Portal -> Function App `<name-of-the-functionapp>` -> Functions -> Select the Function -> Monitor -> Logs tab
 
 ### Local Test
 
 **NOTE:** Only http triggered function can be tested locally.
 
-Add the connection string from arm deployment to `local.settings.json`. They will be accessible to the function as enviromental properties.
+Add the connection string from arm deployment to `local.settings.json`. They will be accessible to the function as enviromental variables and also automatically loaded as configuration.
 
 ```json
 {
@@ -498,8 +422,8 @@ Add the connection string from arm deployment to `local.settings.json`. They wil
   "Values": {
       "AzureWebJobsStorage": "UseDevelopmentStorage=true",
       "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-      // add this
-      "StorageAccountConnectionString":"<the-connection-string-from-arm>"
+      // Add this:
+      "TransportsDbConnectionString":"<the-connection-string-from-arm>"
   }
 }
 ```
@@ -507,16 +431,23 @@ Add the connection string from arm deployment to `local.settings.json`. They wil
 Then navigate to `<project-root>/sln/AzureFunctions` and [run](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Ccsharp%2Cbash#start)
 
 ```pwsh
-func start --build
+func start
 ```
 
-Then use the requests from the section [Smoke Test](#Smoke-Test)
+Then use the requests from the section [Test](#Test).
 
 ### Storage Check
 
-Open Azure Storage Explorer and log in.
 
-Find the table under your subscription -> Storage Accounts -> `<your-storage-account-name>` -> Tables -> `transports`
+Open [Azure Portal](https://portal.azure.com/) in you browser.
 
-Check that all the records are there.
+Find the SQL Database resource.
+
+Go to Query Editor in the left panel.
+
+Login using the admin credentials.
+
+Find the table: Tables -> dbo.Transports. 
+
+Right-click and select "Select Top 1000 Rows".
 

@@ -3,13 +3,14 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "storageAccountName": { "type": "string" },
-        "transportsTableName": { "type": "string" },
+        "functionAppName": { "type": "string" },
         "appInsightsName": { "type": "string" },
-        "functionAppName": { "type": "string" }
+        "sqlServerName": {"type": "string"},
+        "adminPassword": {"type": "secureString"},
+        "adminUsername": {"type": "string", "defaultValue": "mffAdmin"}
     },
     "variables": {
-        "storageAccountTableService": "[concat(parameters('storageAccountName'), '/' ,'default')]",
-        "storageAccountTableServiceTransport": "[concat(parameters('storageAccountName'), '/' ,'default','/', parameters('transportsTableName'))]"
+        "transportsDatabaseName": "transports"
     },
     "resources": [
         {
@@ -29,30 +30,7 @@
                 "allowBlobPublicAccess": false,
                 "supportsHttpsTrafficOnly": true,
                 "minimumTlsVersion": "TLS1_2"
-            },
-            "resources": [
-                {
-                    "name": "[variables('storageAccountTableService')]",
-                    "type": "Microsoft.Storage/storageAccounts/tableServices",
-                    "apiVersion": "2019-06-01",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
-                    ],
-                    "properties": {
-
-                    },
-                    "resources": [
-                        {
-                            "name": "[variables('storageAccountTableServiceTransport')]",
-                            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
-                            "apiVersion": "2019-06-01",
-                            "dependsOn": [
-                                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccountName') , 'default')]"
-                            ]
-                        }
-                    ]
-                }
-            ]
+            }
         },
         {
             "apiVersion": "2015-05-01",
@@ -67,6 +45,47 @@
             }
         },
         {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2022-05-01-preview",
+            "name": "[parameters('sqlServerName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "administratorLogin": "[parameters('adminUsername')]",
+                "administratorLoginPassword": "[parameters('adminPassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Sql/servers/firewallRules",
+                    "apiVersion": "2022-05-01-preview",
+                    "name": "[format('{0}/{1}', parameters('sqlServerName'), 'AllowAllWindowsAzureIps')]",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+                    ]
+                },
+                {
+                    "type": "databases",
+                    "name": "[variables('transportsDatabaseName')]",
+                    "apiVersion": "2022-11-01-preview",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "collation": "SQL_Latin1_General_CP1_CS_AS"
+                    },
+                    "sku": {
+                        "name": "Basic",
+                        "tier": "Basic"
+                    }
+                }
+            ]
+        },
+        {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2018-11-01",
             "name": "[parameters('functionAppName')]",
@@ -74,6 +93,7 @@
             "kind": "functionapp",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+                "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]",
                 "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
@@ -88,6 +108,10 @@
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';EndpointSuffix=', environment().suffixes.storage, ';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value)]"
                         },
                         {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "dotnet-isolated"
+                        },
+                        {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "~4"
                         },
@@ -96,12 +120,8 @@
                             "value": "[reference(resourceId('microsoft.insights/components', parameters('appInsightsName')), '2020-02-02-preview').InstrumentationKey]"
                         },
                         {
-                            "name": "FUNCTIONS_WORKER_RUNTIME",
-                            "value": "dotnet"
-                        },
-                        {
-                            "name": "StorageAccountConnectionString",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';EndpointSuffix=', environment().suffixes.storage, ';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value)]"
+                            "name": "TransportsDbConnectionString",
+                            "value": "[concat('Server=tcp:', reference(parameters('sqlServerName'), '2022-05-01-preview').fullyQualifiedDomainName ,',1433;','Initial Catalog=',variables('transportsDatabaseName'),';', 'User ID=', parameters('adminUsername'), ';', 'Password=', parameters('adminPassword'), ';')]"
                         }
                     ]
                 }
@@ -109,9 +129,9 @@
         }
     ],
     "outputs": {
-        "StorageAccountConnectionString": {
+        "sqlConnectionString": {
             "type": "string",
-            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';EndpointSuffix=', environment().suffixes.storage, ';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value)]"
+            "value": "[concat('Server=tcp:', reference(parameters('sqlServerName'), '2022-05-01-preview').fullyQualifiedDomainName ,',1433;','Initial Catalog=',variables('transportsDatabaseName'),';', 'User ID=', parameters('adminUsername'), ';', 'Password=', parameters('adminPassword'), ';')]"
         }
     }
 }
