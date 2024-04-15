@@ -99,6 +99,7 @@ Robot R-1 moves parcel 4242 from inbound zone I-12 to outbound zone O-25 in 40 s
 They want to consume the data via HTTP API from their auditing service.
 
 ### Ideas - discussion
+
 ```
 
 
@@ -143,6 +144,7 @@ Request Body:
 
 ```json
 {
+  "transportId": "15asd55cvgh",
   "parcelId": "sf546ad465asd",
   "facilityId": "prague-e12",
   "transportedAt": "2022-04-05T15:01:02Z",
@@ -213,7 +215,8 @@ Response Body:
   "locationFrom": "in-25",
   "locationTo": "out-35",
   "timeSpentSeconds": 31,
-  "deviceId": "sorter-1654345"
+  "deviceId": "sorter-1654345",
+  "transportId": "15asd55cvgh"
 }
 ```
 
@@ -338,6 +341,7 @@ CREATE TABLE [Transports] (
     [LocationTo] nvarchar(max) NOT NULL,
     [TimeSpentSeconds] bigint NOT NULL,
     [DeviceId] nvarchar(max) NOT NULL,
+    [TransportId] nvarchar(max) NOT NULL,
     CONSTRAINT [PK_Transports] PRIMARY KEY ([TransportedDate], [FacilityId], [ParcelId])
 );
 ```
@@ -362,7 +366,8 @@ $body = @{
   parcelId="1";
   transportedAt="2022-04-05T15:01:02Z";
   deviceId="sorter-123";
-  facilityId="facilityId";
+  facilityId="facility-123";
+  transportId="t-4156";
 } | ConvertTo-Json
 
  Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body -ContentType "application/json"
@@ -372,7 +377,7 @@ cURL
 
 ```sh
 curl -X POST -H "Content-Type: application/json" \
-    -d '{"parcelId": "12345","facilityId": "prague","transportedAt": "2022-04-05T15:01:02Z", "locationFrom": "in-25",  "locationTo": "out-35",  "transportDurationSec": 50,  "deviceId": "sorter-1654345"
+    -d '{"parcelId": "12345","facilityId": "prague","transportedAt": "2022-04-05T15:01:02Z", "locationFrom": "in-25",  "locationTo": "out-35",  "transportDurationSec": 50,  "deviceId": "sorter-1654345", "transportId": "t-4156"
 }' \
     <URI>
 ```
