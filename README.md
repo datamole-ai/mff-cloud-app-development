@@ -60,6 +60,8 @@ During the lessons, some topics will be accommpanied with examples in C# program
 
 The semestral project will require students to create a system design for a simple IoT solution. Students are expected to deliver the design in the form of text documents and diagrams. Students can work on the assignment individually or in pairs.
 
+Last lesson of the subcourse will be dedicated to the **voluntary** presentation of the semestral projects. Students who decide to present during this last lesson will have at least 15 minutes to present their solution followed-up with a discussion. During the discussion, additional questions asked and possible problems in the solution might be resolved. Authors of presented solutions for which all problems are resolved during the discussion **will receive the subcourse credit right away**.
+
 The deadline for handing-in the semestral project is **31. 05. 2024**. After the deadline, the project will be evaluated and 1 or 2 feedback rounds will be provided. Semestral project including feedback rounds must be completed till the end of exam period (i.e. 30. 06. 2024).
 
 The documents and diagrams representing the solution should be stored in **private GitHub repository** and pushed to the branch `feature/solution`. After that following actions are required:
