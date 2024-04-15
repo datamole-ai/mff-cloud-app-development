@@ -329,7 +329,7 @@ Go to Query Editor in the left panel.
 
 Login using the admin credentials.
 
-Create and execute new query:
+Execute the following query:
 
 ```sql
 CREATE TABLE [Transports] (
@@ -414,7 +414,7 @@ Log output of each function can be read via Portal -> Function App `<name-of-the
 
 **NOTE:** Only http triggered function can be tested locally.
 
-Add the connection string from arm deployment to `local.settings.json`. They will be accessible to the function as enviromental variables, the are also automatically loaded to configuration.
+Add the connection string from arm deployment to `local.settings.json`. They will be accessible to the function as enviromental variables and also automatically loaded as configuration.
 
 ```json
 {

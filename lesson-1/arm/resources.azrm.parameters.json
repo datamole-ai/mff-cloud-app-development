@@ -1,14 +1,14 @@
 {
     "storageAccountName": {
-        "value": "mff202404140920"
+        "value": "mff<your-suffix>"
     },
     "functionAppName": {
-        "value": "mff-iot-fa-202404140920"
+        "value": "mff-iot-fa-<your-suffix>"
     },
     "appInsightsName": {
-        "value": "mff-iot-ai-202204121640"
+        "value": "mff-iot-ai-<your-suffix>"
     },
     "sqlServerName": {
-        "value": "mff-iot-sql-202204121640"
+        "value": "mff-iot-sql-<your-suffix>"
     }
 }
