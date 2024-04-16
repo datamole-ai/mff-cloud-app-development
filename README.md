@@ -23,7 +23,6 @@ There will be 5 lessons and one semestral project in total. First four lessons w
   * Types, scalability and economical aspects of various storages.
   * Overview of relevant Azure resources - Storage (Tables, Blobs), App Service.
   * Case study (continued - scalable storage).
-  * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
 
 * **Lesson 3** (09. 05. 2024)
   * Asynchronous communication, messaging.
