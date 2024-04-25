@@ -236,8 +236,9 @@ Navigate to the `lesson-1/arm` directory and see the [ARM template](/lesson-1/ar
 * Function App
 * Storage Account
 * App Insights
+* Azure SQL
 
-First thing is to create a new resource group. In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-<name>-<surname>").
+First thing is to create a new resource group. In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-{name}-{surname}").
 
 ```pswh
 az group create --location 'WestEurope' -n <resource-group>
@@ -268,7 +269,7 @@ You should copy the Connection String to the database for local development. It 
 }
 ```
 
-### Create Azure Functions from a template
+## Create Azure Functions from a template
 
 Prerequisites: [Azure Functions Core](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools)
 
