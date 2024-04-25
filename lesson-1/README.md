@@ -209,11 +209,14 @@ Robot R-1 moves parcel 4242 from inbound zone I-12 to outbound zone O-25 in 40 s
 
 They want to consume the data via HTTP API from their auditing service.
 
+> Let's assume that (date, facilityId, parcelId) identifies exactly one transport within the facility. 
+> That is, on a specific day, in a particular facility, each parcel could be transported at most once.
+
 ## Ideas - discussion
 
 ```
 
-````
+```
 
 ## Resulting design
 
@@ -333,6 +336,7 @@ git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 Navigate to the `lesson-1/arm` directory and see the [ARM template](/lesson-1/arm/resources.azrm.json). It contains
 
 - Function App
+- Azure SQL
 - Storage Account
 - App Insights
 
