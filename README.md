@@ -10,14 +10,14 @@ The goal of the subcourse is to:
 
 There will be 5 lessons and one semestral project in total. First four lessons will be used to deliver most of the planned content and the last lesson will be dedicated for the presentation of the semestral projects.
 
-# Lesson Outline
+# Course Outline
 
 * **Lesson 1** (25. 04. 2024)
   * Introduction.
   * Specifics of software engineering for IoT and cloud.
   * Overview of relevant Azure resources - SQL, Functions with HTTP trigger, ARM Templates. 
   * Case study (basic solution).
-  * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
+  * For more details visit [lesson-1](./lesson-1/README.md).
 
 * **Lesson 2** (02. 05. 2024)
   * Types, scalability and economical aspects of various storages.
