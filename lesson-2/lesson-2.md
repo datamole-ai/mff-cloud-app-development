@@ -10,9 +10,9 @@
 
 The business of your client is thriving! 
 
-Now, they have hundreds of sorting facilities and they need to store tens of TBs of data. The already hit the storage limits of the general-purpose Azure SQL. They want to increase the traffic from their Auditing Service, but the price of the SQL server gets very high.
+Now, they have hundreds of sorting facilities and the projection is to store tens of TBs of data. They already hit the storage limits of the general-purpose Azure SQL. They want to increase the traffic from their Auditing Service, but the price of the SQL server gets very high.
 
-They want to present transportation data via a web application accessible to their technicians for troubleshooting within the facilities. Initially, the application will provide data from our existing APIs alongside additional device information from the client's "Device Inventory Service". It is expected that the app will include data from more services, both ours and client's. It is also planned to develop a real-time dashboard using websockets or similar technology.
+They want to present transportation data via a web application accessible to their technicians for troubleshooting within the facilities. Initially, the application will provide data from our existing APIs alongside additional device information from the client's "Device Inventory Service". It is expected that the app will include data from more services, both ours and those of our client.
 
 The data access patterns stay the same.
 
@@ -27,22 +27,7 @@ The data access patterns stay the same.
 
 ### Ideas - discussion
 
-```
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
- 
+``` 
  
 ``` 
  
@@ -70,7 +55,6 @@ Azure Table
 PartitionKey: <TransportedDate>_<FacilityId>
 RowKey: <ParcelId>
 
-TransportedDate: string
 FacilityId: string
 ParcelId: string
 TransportedAt: DateTime
@@ -105,36 +89,38 @@ First thing is to create a new resource group (or reuse the one from the previou
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Edit the values in the `lesson-2/arm/resources.azrm.parameters.json` so they are unique.
-
-Then, deploy the infrastructure defined in `lesson-2/arm/resources.azrm.json` with the following command.
+Then, deploy the infrastructure defined in `lesson-2/arm/resources.azrm.json` with the following command. Define the suffix parameter, e.g. your surname. The suffix is used in the names of the resources, so they are unique.
 
 ```pwsh
-cd lesson-1/arm
+cd lesson-2/arm
 az deployment group create `
   --name "deploy-mff-task-components" `
-  --resource-group "mff-lectures" `
+  --resource-group "<resource-group>" `
   --template-file "resources.azrm.json" `
-  --parameters "resources.azrm.parameters.json"
+  --parameters suffix="<suffix>"
 ```
 
-You should copy the Connection String to the storage and API key for the function host for local development. It should appear in the output as follows:
+For local development, you need to copy the output values. It should appear in the output as follows:
 
 ```json
 "outputs": {
       "functionsHostKey": {
         "type": "String",
-        "value": "<key>"
+        "value": "<functionHostKey>"
+      },
+      "functionsHostUrl": {
+        "type": "String",
+        "value": "<functionHostUrl>"
       },
       "storageAccountConnectionString": {
         "type": "String",
         "value": "<storageAccountConnectionString>"
       }
-}
+    }
 ```
 
 ### Deploy the Functions
-Deploy the new versions of the functions
+Deploy the new versions of the functions. You'll find the name of the function app in the output of the deployment command (it is defined as `mff-iot-fa-<suffix>`).
 
 ```
 cd lesson-2/sln/AzureFunctions
@@ -146,7 +132,7 @@ func azure functionApp publish "<name-of-the-functionapp>" --show-keys
 Go to `lesson-2/sln/WebAppBackend`
 
 It is possible to deploy the app directly from your IDE:
-- VS, Rider (with Azure plugin) - Right-click on the project -> Publish
+- Visual Studio, Rider (with Azure plugin) - Right-click on the project -> Publish
 
 #### Deployment with az cli
 
@@ -155,14 +141,14 @@ Publish the project:
 dotnet publish
 ```
 
-Create a zip archive from the artifacts:
+Create a zip archive from the publish artifacts:
 
 ```pwsh
 # Powershell
 Compress-Archive -Path bin\Release\net8.0\publish\* -DestinationPath deploy.zip
 ```
 
-Upload the zip file to Azure:
+Upload the zip file to Azure via az cli:
 
 ```shell
 az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resource-group-name>
@@ -171,46 +157,7 @@ az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resou
 
 ## Test
 
-### Event Consumer
-
-Powershell
-```pwsh
-$body = @{
-  locationFrom="a";
-  locationTo="b";
-  transportDurationSec=30;
-  parcelId="1";
-  transportedAt="2022-04-05T15:01:02Z";
-  deviceId="sorter-123";
-  facilityId="facility-123";
-  transportId="t-4156";
-} | ConvertTo-Json
-
- Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body -ContentType "application/json"
-```
-
-cURL
-
-```sh
-curl -X POST -H "Content-Type: application/json" \
-    -d '{"parcelId": "12345","facilityId": "prague","transportedAt": "2022-04-05T15:01:02Z", "locationFrom": "in-25",  "locationTo": "out-35",  "transportDurationSec": 50,  "deviceId": "sorter-1654345", "transportId": "t-4156"
-}' \
-    <URI>
-```
-
-### Reporter
-
-#### Daily Statistics
-
-Powershell
-```pwsh
-Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
-```
-
-cUrl
-```sh
-curl "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
-```
+### Backend for Frontend
 
 #### Individual Transport
 
@@ -228,6 +175,8 @@ Log output of each function can be read via Portal -> Function App `<name-of-the
 
 ### Local Test
 
+#### Functions
+
 **NOTE:** Only http triggered function can be tested locally.
 
 Add the connection string from arm deployment to `/sln/AzureFunctions/local.settings.json`. They will be accessible to the function as enviromental variables and also automatically loaded as configuration.
@@ -239,7 +188,7 @@ Add the connection string from arm deployment to `/sln/AzureFunctions/local.sett
       "AzureWebJobsStorage": "UseDevelopmentStorage=true",
       "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
       // Add this:
-      "TransportsDbConnectionString":"<the-connection-string-from-arm>"
+      "TransportsStorageConnectionsString":"<the-connection-string-from-arm>"
   }
 }
 ```
@@ -250,10 +199,22 @@ Then navigate to `<project-root>/sln/AzureFunctions` and [run](https://docs.micr
 func start
 ```
 
-Then use the requests from the section [Test](#Test).
+#### Backend for Frontend
+
+Create file `/sln/WebAppBackend/appsettings.Development.json` with the function app host key and the url. You can use the url from the output of the deployment. Alternatively, you can use a url of the locally executed functions. It will appear in the output of `func start` (somthing like this: `http://localhost:7071/`).
+
+```json
+{
+    "StatsReporter": {
+        "FunctionHostKey": "<function-host-key>",
+        "FunctionHostUrl": "<function-host-url>"
+    }
+}
+```
+
+Run the project in your IDE, or using `dotnet run` in the `/sln/WebAppBackend/` directory.
 
 ### Storage Check
-
 
 Open [Azure Portal](https://portal.azure.com/) in you browser.
 

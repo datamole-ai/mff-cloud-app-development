@@ -11,16 +11,16 @@ public class TransportsRepository
     
     public TransportsRepository()
     {
-        var storageConnectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+        var storageConnectionString = Environment.GetEnvironmentVariable("TransportsStorageConnectionsString");
 
-        _tableClient = new TableClient(storageConnectionString, "transports");
+        _tableClient = new(storageConnectionString, "transports");
     }
 
     public async Task SaveTransportAsync(Transport transport, CancellationToken cancellationToken)
     {
         var transportEntity = TransportEntity.FromTransport(transport);
 
-        await _tableClient.AddEntityAsync(transportEntity, cancellationToken);
+        await _tableClient.UpsertEntityAsync(transportEntity, TableUpdateMode.Replace, cancellationToken);
     }
 
     public async Task<TransportEntity?> FindTransportAsync(DateOnly date, string facilityId, string parcelId, CancellationToken cancellationToken)

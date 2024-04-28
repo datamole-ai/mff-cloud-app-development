@@ -1,14 +1,5 @@
 {
-    "storageAccountName": {
-        "value": "mff21042024"
-    },
-    "functionAppName": {
-        "value": "mff-iot-fa-21042024"
-    },
-    "appInsightsName": {
-        "value": "mff-iot-ai-21042024"
-    },
-    "webAppName": {
-        "value": "mff-iot-webapp-21042024"
+    "suffix": {
+        "value": "27022024"
     }
 }

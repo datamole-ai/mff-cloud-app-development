@@ -8,7 +8,6 @@ public record TransportEntity(
     string RowKey,
     DateTimeOffset? Timestamp,
     ETag ETag,
-    DateOnly TransportedDate,
     string FacilityId,
     string ParcelId,
     DateTimeOffset TransportedAt,
@@ -17,6 +16,7 @@ public record TransportEntity(
     long TimeSpentSeconds,
     string DeviceId): ITableEntity
 {
+
     public static TransportEntity FromTransport(Transport transport)
     {
         var date = DateOnly.FromDateTime(dateTime: transport.TransportedAt.UtcDateTime);
@@ -26,7 +26,6 @@ public record TransportEntity(
             RowKey: transport.ParcelId,
             ETag: default,
             Timestamp: default,
-            TransportedDate: date,
             FacilityId: transport.FacilityId,
             ParcelId: transport.ParcelId,
             TransportedAt: transport.TransportedAt,
@@ -42,4 +41,9 @@ public record TransportEntity(
     public ETag ETag { get; set; } = ETag;
     
     public static string GeneratePartitionKey(DateOnly date, string facilityId) => $"{date:yyyy-MM-dd}_{facilityId}";
+    
+    public TransportEntity() : this(default!, default!, default!, default!, default!, default!, default, default!, default!, default, default!)
+    {
+        
+    }
 }
