@@ -10,7 +10,7 @@ public class GetTransport(TransportsRepository transportsRepository)
 {
     [Function("GetTransport")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req, CancellationToken cancellationToken)
     {
         req.Query.TryGetValue("date", out var dateQuery);
         req.Query.TryGetValue("facilityId", out var facilityIdQuery);
@@ -21,7 +21,7 @@ public class GetTransport(TransportsRepository transportsRepository)
             return new BadRequestResult();
         }
 
-        return await transportsRepository.FindTransportAsync(date, facilityIdQuery!, parcelIdQuery!) switch
+        return await transportsRepository.FindTransportAsync(date, facilityIdQuery!, parcelIdQuery!, cancellationToken) switch
         {
             { } transport => new OkObjectResult(transport),
             _ => new NotFoundResult()

@@ -15,14 +15,14 @@ public class EventConsumer(TransportsRepository transportsRepository, ILogger<Ev
 {
     [Function("EventConsumer")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req, [FromBody] Transport? transport)
+        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req, [FromBody] Transport? transport, CancellationToken cancellationToken)
     {
         if (transport is null)
         {
             return new BadRequestResult();
         }
 
-        await transportsRepository.SaveTransportAsync(transport);
+        await transportsRepository.SaveTransportAsync(transport, cancellationToken);
 
         logger.LogInformation("Transport {transport} saved.", transport);
 
