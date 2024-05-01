@@ -87,6 +87,10 @@
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                             "value": "[reference(resourceId('microsoft.insights/components', variables('appInsightsName')), '2020-02-02-preview').InstrumentationKey]"
+                        },
+                        {
+                            "name": "TransportsStorageConnectionsString",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';EndpointSuffix=', environment().suffixes.storage, ';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value)]"
                         }
                     ]
                 }
@@ -118,11 +122,11 @@
                     "linuxFxVersion": "DOTNETCORE|8.0",
                     "appSettings": [
                         {
-                            "name": "StatsReporter:FunctionHostKey",
+                            "name": "StatsReporter__FunctionHostKey",
                             "value": "[listKeys(concat(resourceId('Microsoft.Web/sites',  variables('functionAppName')), '/host/default'), '2018-11-01').functionKeys['default']]"
                         },
                         {
-                            "name": "StatsReporter:FunctionHostUrl",
+                            "name": "StatsReporter__FunctionHostUrl",
                             "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('functionAppName'))).defaultHostName)]"
                         }
                     ]

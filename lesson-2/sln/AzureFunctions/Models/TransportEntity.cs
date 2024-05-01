@@ -17,7 +17,7 @@ public record TransportEntity(
     string DeviceId): ITableEntity
 {
 
-    public static TransportEntity FromTransport(Transport transport)
+    public static TransportEntity FromDomainModel(Transport transport)
     {
         var date = DateOnly.FromDateTime(dateTime: transport.TransportedAt.UtcDateTime);
 
