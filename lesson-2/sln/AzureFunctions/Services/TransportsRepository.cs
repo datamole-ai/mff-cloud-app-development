@@ -18,16 +18,19 @@ public class TransportsRepository
 
     public async Task SaveTransportAsync(Transport transport, CancellationToken cancellationToken)
     {
-        var transportEntity = TransportEntity.FromTransport(transport);
+        var transportEntity = TransportEntity.FromDomainModel(transport);
 
         await _tableClient.UpsertEntityAsync(transportEntity, TableUpdateMode.Replace, cancellationToken);
     }
 
-    public async Task<TransportEntity?> FindTransportAsync(DateOnly date, string facilityId, string parcelId, CancellationToken cancellationToken)
+    public async Task<Transport?> FindTransportAsync(DateOnly date, string facilityId, string parcelId, CancellationToken cancellationToken)
     {
         try
         {
-            return await _tableClient.GetEntityAsync<TransportEntity>(partitionKey: TransportEntity.GeneratePartitionKey(date, facilityId), rowKey: parcelId, cancellationToken: cancellationToken);
+            var entity = await _tableClient.GetEntityAsync<TransportEntity>(partitionKey: TransportEntity.GeneratePartitionKey(date, facilityId), rowKey: parcelId,
+                cancellationToken: cancellationToken);
+
+            return entity.HasValue ? entity.Value.ToDomainModel() : null;
         } catch (RequestFailedException ex) when (ex.Status == 404)
         {
             return null;

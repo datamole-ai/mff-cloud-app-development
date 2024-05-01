@@ -13,7 +13,7 @@ public class DeviceDirectoryClientMock
         return new()
         {
             Id = deviceId,
-            Model = _modelNames[deviceId.GetHashCode() % (_modelNames.Length-1)],
+            Model = _modelNames[deviceId.Length % (_modelNames.Length-1)],
             ProvisionedAt = DateTimeOffset.Now.Subtract(TimeSpan.FromDays(100))
         };
     }
