@@ -10,7 +10,7 @@
 
 The business of your client is thriving! 
 
-Now, they have hundreds of sorting facilities and the projection is to store tens of TBs of data. They already hit the storage limits of the general-purpose Azure SQL. They want to increase the traffic from their Auditing Service, but the price of the SQL server gets very high.
+Now, they have hundreds of sorting facilities and the projection is to store tens of TBs of data. They already hit the storage limits of the general-purpose Azure SQL and the price gets very high.
 
 They want to present transportation data via a web application accessible to their technicians for troubleshooting within the facilities. Initially, the application will provide data from our existing APIs alongside additional device information from the client's "Device Inventory Service". It is expected that the app will include data from more services, both ours and those of our client.
 
@@ -18,7 +18,7 @@ The data access patterns stay the same.
 
 **Our task:**
 
-* Optimize the storage for higer traffic and storage
+* Optimize the storage for higer traffic and higher amounts of data stored
 * Design the changes needed to add the web application to the system
 
 
@@ -27,10 +27,6 @@ The data access patterns stay the same.
 
 ### Ideas - discussion
 
-``` 
- 
-``` 
- 
 
 ## Resulting design
 
@@ -49,6 +45,8 @@ The data access patterns stay the same.
 Azure Table
 
 ### Transport Table Entity
+
+We should ideally use one table per day, so we can efficiently delete the data according to our retention policy.
 
 
 ```
