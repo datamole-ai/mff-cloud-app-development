@@ -257,6 +257,61 @@ az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resou
 
 ## Test
 
+### Send Events to the Consumer Function
+
+Request Method: `POST`
+
+Request Query Parameters: None
+
+Request Body:
+
+```json
+{
+  "parcelId": "12345",
+  "facilityId": "prague",
+  "transportedAt": "2022-04-05T15:01:02Z",
+  "locationFrom": "in-25",
+  "locationTo": "out-35",
+  "transportDurationSec": 50,
+  "deviceId": "sorter-1654345",
+  "transportId": "a1ds3e8r"
+}
+````
+
+Response Code:
+
+- `201 Created` - Event was successfully stored.
+- `400 Bad Request` - Body is not in the correct form.
+
+
+Powershell
+
+```pwsh
+$body = @{
+  locationFrom="a";
+  locationTo="b";
+  transportDurationSec=30;
+  parcelId="1";
+  transportedAt="2022-04-05T15:01:02Z";
+  deviceId="sorter-123";
+  facilityId="facility-123";
+  transportId="t-4156";
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body -ContentType "application/json"
+```
+
+cURL
+
+```sh
+curl -X POST -H "Content-Type: application/json" \
+    -d '{"parcelId": "12345","facilityId": "prague","transportedAt": "2022-04-05T15:01:02Z", "locationFrom": "in-25",  "locationTo": "out-35",  "transportDurationSec": 50,  "deviceId": "sorter-1654345", "transportId": "t-4156"
+}' \
+    <URI>
+```
+
+Response Body: None
+
 ### Backend for Frontend
 
 #### Individual Transport
@@ -264,13 +319,13 @@ az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resou
 Powershell
 
 ```pwsh
-Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
+Invoke-WebRequest -Uri "<webapp-uri>/transports?date=2022-04-05&facilityId=prague&parcelId=123"
 ```
 
 cUrl
 
 ```sh
-curl "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
+curl "<webapp-uri>/transports?date=2022-04-05&facilityId=prague&parcelId=123"
 ```
 
 Log output of each function can be read via Portal -> Function App `<name-of-the-functionapp>` -> Functions -> Select the Function -> Monitor -> Logs tab
