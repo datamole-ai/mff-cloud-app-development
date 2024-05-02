@@ -1,88 +1,199 @@
 # Lesson 1
 
-## Overview of relevant Azure resources
+# Course introduction
 
-* [Azure SQL Database](https://learn.microsoft.com/en-us/azure/azure-sql/database)
-* [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/)
-  * HTTP Trigger
-* [Azure Resource Manager (ARM) Templates](https://docs.microsoft.com/en-us/azure/templates/)
+## Lecturers
 
-## Cloud-based development of IoT solutions
+- **Tomáš Pajurek** - CTO at Spotflow, Team Lead and Software Architect at Datamole.
+- **David Nepožitek** - Software Engineer at Spotflow and Datamole.
 
-### Benefits of cloud solutions compared to on-premises solutions
+[Datamole](https://www.datamole.ai/) helps industrial companies become more sustainable and profitable by developing innovative data & AI-driven solutions. [Spotflow](https://spotflow.io/) is Datamole's spinoff, building industrial IoT platform for managing devices and collecting data reliably at scale.
 
-#### Prototyping & Incremental development
+## Course outline
 
-* New ideas can be tested immediately without up-front investments and delays.
-* Infrastructure for the applications can be added just-in-time.
-  * Including e.g. GPUs, NVMes, SGX/SEV.
+See the [Course Outline](../README.md) in the root of the repository.
 
-#### System architecture changes
+# What is cloud
 
-* Cost of provisioning new infrastructure does not have to be considered.
-* ROI of existing infrastructure does not have to be considered.
+- On-demand compute & storage resources accessible over the Internet.
+- Mostly multi-tenant.
 
-#### Cost management
+## Models
 
-* Infrastructure over-provisioning can be avoided with pay-as-you-go pricing.
-* For predictable workloads, cost can be optimized with capacity reservations.
+- **Infrastructure as a Service (IaaS)**: virtual machines, disks, networking, dedicated machines.
+- **Platform as a Service (PaaS)**: web servers, databases, serverless, Kubernetes.
+- **Software as a Service (SaaS)**: applications, analytics, machine Learning, geospatial, etc.
 
-#### System load changes
+# Designing systems for the cloud - the good parts
 
-* Capacity of the system can be adjusted/scaled to current demand.
-* The scaling is very flexible and can be even on the less-than-hourly basis.
+## Easily accessible infrastructure for prototyping
 
-### Drawbacks of cloud solutions compared to on-premises solutions
+- New ideas can be tested immediately without up-front investments and delays.
+- Infrastructure for the applications can be added just-in-time.
+  - Including e.g. GPUs, NVMes, SGX/SEV.
 
-#### Price
+## Capacity of the system can be adjusted easily & dynamically
 
-* Renting bare-metal HW can be significantly cheaper.
+- No need to plan too far ahead.
+- Suitable for incremental development.
+- No need to over-allocate resources. Infrastructure over-provisioning can be avoided with pay-as-you-go pricing.
+- The capacity of the system can be adjusted/scaled to current demand.
+- The scaling is very flexible and can be even on a less-than-hourly basis.
 
-#### Data residency & security
+## Relatively easy geo-distribution
 
-### Many point of views on IoT solutions
+Compared to on-premises solutions, deploying the system in multiple regions is easier if needed.
 
-#### Hardware + Embedded Software
+## Adjustable trade-off between customizability/versatility and operational overhead
 
-* Performance.
-* Reliability.
-* Power usage.
-* Real-time.
+Different systems or even different parts of a single system can choose the trade-off between:
 
-#### Integration
+- IaaS services that can be highly customized but bring higher operational overhead and high-level
+- PaaS and SaaS services that are not as customizable but bring lower operational overhead.
 
-* Deployment of devices into field
-* Networking.
-* Security.
-* Updates.
+## Flexible system architecture
 
-#### Cloud/Backend
+- Infrastructure can be redesigned at any time.
+- The cost of provisioning new infrastructure does not have to be considered.
+- ROI of existing infrastructure does not have to be considered.
 
-* (Stateful) connection of many devices.
-* Storing of data.
-* Processing of data.
-* Cloud-to-device communication.
+# Designing systems for the cloud - the not-so-good parts
 
-### Challenges for cloud services
+## Transient failures happen regularly
 
-* Unbalanced load in time - autoscaling.
-* IoT devices are frequently geodistributed.
-    * Network reliability and latency challenges.
-    * Might lead to geodistributed system architecture.
-* In-order processing of data from a single device.
-    * Sequential.
-    * Not trivial to achieve in distributed systems.
-        * Retries, failovers.
-        * Tradeoff with high-availability.
-    * Batching- throughput vs latency.
-* Parallel processing of data from multiple devices.
-* Extremely unreliable clocks on devices.
-* Huge amounts of relatively low-value transactions compared to typical business applications.
-    * Logging/tracing every single transaction (e.g. collecting one sensor reading) is not feasible.
-        * Designing logging/tracing strategy is complex.
-        * Debugging is harder.
+Network errors, overloaded servers, unavailable services, VMs being restarted, and DNS being reconfigured are a norm, software running in the cloud must be designed to handle them.
 
-## Case study problem statement
+## Management of cloud resources
+
+Everything is exposed as an API over the Internet. There is no layer of physical security as in traditional data centers. Every mistake in configuration or access control is a very serious one.
+
+Also, from time to time, some cloud service is deprecated which require migration to another service.
+
+## Vendor lock-in
+
+IaaS services are quite generic and portable. However PaaS and SaaS services are often very specific to the cloud provider and migration to other providers is hard or not possible without system redesign (e.g. due reliance on specific service guarantees or cost model).
+
+## Data residency & privacy
+
+- Significant issue for some companies.
+- Government access requests?
+
+## Costs
+
+- Quite complicated cost structure - compute, storage, egress, ingress, and more.
+- Can be much more expensive than comparable on-premises "bare metal" hardware.
+- For predictable workloads, cost can be optimized with capacity reservations but will be higher than on-premises.
+
+# What is an IoT solution
+
+There are multiple points of view:
+
+## Development of hardware and embedded software
+
+- Performance.
+- Reliability.
+- Power usage.
+- Real-time.
+
+## Integration
+
+- Deployment of devices into the field
+- Networking.
+- Security.
+- Updates.
+
+## Cloud/Backend
+
+- (Stateful) connection of many devices.
+- Storing of data.
+- Processing of data.
+- Cloud-to-device communication.
+
+# Interesting challenges for backend/cloud services in IoT solutions
+
+The development of backends for IoT solutions is software engineering like any other. However, there are some challenges that are more common in IoT solutions than in typical business applications. Also, many of these challenges are also relevant for observability solutions.
+
+## Connectivity and hardware of IoT devices is far from perfect
+
+- Long connectivity disruptions, as well as other failures are a norm, not an exception.
+- Network bandwidth is limited.
+- Disk space is limited.
+- Harsh prioritization is needed.
+- Extremely unreliable clocks on devices
+
+## In-order time-series data processing
+
+It is much easier to process data from devices if there are at least some guarantees about ordering.
+
+In-order processing is not trivial in distributed systems.
+
+- Retries, fail-overs.
+- Trade-off with high availability.
+
+## Huge amounts of relatively low-value data compared to typical business applications.
+
+Logging/tracing every single transaction (e.g., collecting one sensor reading) is not feasible:
+
+- Designing a logging/tracing strategy is non-trivial.
+- Debugging is harder.
+
+## Trade-off between throughput and latency
+
+Typical IoT solutions need at least some functionality to work close to real-time manner (to have minimal latency from device sending a data point to time moment when the data point is processed).
+
+Low latency negatively impacts throughput (e.g., possibility of batching of data points limited).
+
+## Geo-distribution of devices
+
+Devices (clients) that are distributed across the globe (or at least across multiple regions) bring additional challenges:
+
+- Varying network reliability and latency.
+- Might lead to geo-distributed system architecture.
+
+# Overview of relevant Azure resources
+
+## Azure SQL Database
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/azure-sql/database
+
+PaaS serving as a general-purpose SQL transactional database built on-top of the Microsoft SQL Server.
+
+## Azure Functions
+
+Azure Docs: https://docs.microsoft.com/en-us/azure/azure-functions/
+
+Serverless PaaS for running pieces of code (functions) with minimal management overhead.
+
+### HTTP Trigger
+
+The function is triggered by an HTTP request and its return value is the HTTP response to the request.
+
+## Azure Resource Manager (ARM) Templates
+
+Azure Docs: https://docs.microsoft.com/en-us/azure/templates/
+
+Infrastructure as Code (IaC) tool for Azure services. It allows to define the infrastructure in a declarative way (JSON). It is useful to manage large deployments in repeatable and predictable way.
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-09-01",
+      "name": "mystorageaccount",
+      "location": "westeurope",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2"
+    },
+  ]
+}
+```
+
+# Case study problem statement
 
 Your client operates a delivery company with five sorting facilities. In these facilities, robots retrieve parcels from the inbound zones and transport them to the outbound zones, where they are prepared for the next stages of delivery. The client wants to keep track of the parcel movement within the facilities and get daily reports.
 
@@ -98,32 +209,18 @@ Robot R-1 moves parcel 4242 from inbound zone I-12 to outbound zone O-25 in 40 s
 
 They want to consume the data via HTTP API from their auditing service.
 
-### Ideas - discussion
+> Let's assume that (date, facilityId, parcelId) identifies exactly one transport within the facility. 
+> That is, on a specific day, in a particular facility, each parcel could be transported at most once.
+
+## Ideas - discussion
 
 ```
 
+```
 
-
-
- 
-
-
-
-
-
-
-
-
-
- 
- 
-``` 
- 
-
-### Resulting design
+## Resulting design
 
 ![Design](./imgs/diagram_1.png)
-
 
 ## Components
 
@@ -132,15 +229,15 @@ They want to consume the data via HTTP API from their auditing service.
   - Stats Reporter
 - Storage
 
-## API
+### API
 
-### Event Consumer
+#### Event Consumer
 
 Request Method: `POST`
 
 Request Query Parameters: None
 
-Request Body: 
+Request Body:
 
 ```json
 {
@@ -153,7 +250,7 @@ Request Body:
   "transportDurationSec": 31,
   "deviceId": "sorter-1654345"
 }
-```
+````
 
 Response Code:
 
@@ -168,12 +265,14 @@ Response Body: None
 
 Request Method: `GET`
 
-Request Query Parameters: 
+Request Query Parameters:
+
 - `date`- a day for which the statistics are calculated in form of `yyyy-MM-dd`
 
 Request Body: None
 
 Response Code
+
 - `200 OK` - Statistics calculated and returned in the body
 - `204 No Content` - No events for the given day exists
 - `400 Bad Request` - The query parameter `day` is not correct
@@ -184,7 +283,7 @@ Response Body:
 {
   "day": "20220405",
   "totalTransported": 42,
-  "avgDurationOfTransportationSec": 40.2,
+  "avgDurationOfTransportationSec": 40.2
 }
 ```
 
@@ -192,7 +291,8 @@ Response Body:
 
 Request Method: `GET`
 
-Request Query Parameters: 
+Request Query Parameters:
+
 - `date`- a day of transportation in form of `yyyy-MM-dd`
 - `facilityId`- name of the sorting facility
 - `parcelId`- id of the parcel
@@ -200,6 +300,7 @@ Request Query Parameters:
 Request Body: None
 
 Response Code
+
 - `200 OK` - Statistics calculated and returned in the body
 - `204 No Content` - No events for the given day exists
 - `400 Bad Request` - The query parameter `day` is not correct
@@ -222,7 +323,6 @@ Response Body:
 
 ## Implementation
 
-
 ### Deploy the infrastructure
 
 Prerequisites: [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
@@ -232,11 +332,13 @@ Clone the repository
 ```
 git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 ```
+
 Navigate to the `lesson-1/arm` directory and see the [ARM template](/lesson-1/arm/resources.azrm.json). It contains
-* Function App
-* Storage Account
-* App Insights
-* Azure SQL
+
+- Function App
+- Azure SQL
+- Storage Account
+- App Insights
 
 First thing is to create a new resource group. In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-{name}-{surname}").
 
@@ -282,7 +384,7 @@ func init "AzureFunctions" --worker-runtime "dotnet-isolated" --target-framework
 ```
 
 Create the individual Azure Functions
-  
+
 ```pwsh
 cd ./iot-usecase-1/AzureFunctions
 
@@ -349,7 +451,7 @@ CREATE TABLE [Transports] (
 
 ### Set up the Code
 
-You can find the reference implementation in `sln/AzureFunction`. 
+You can find the reference implementation in `sln/AzureFunction`.
 
 Note that it is definitely not production-ready for many reasons (missing error-handling, validations, observability).
 It should rather serve as a minimal example on how to glue the Azure resources and code together.
@@ -359,6 +461,7 @@ It should rather serve as a minimal example on how to glue the Azure resources a
 ### Event Consumer
 
 Powershell
+
 ```pwsh
 $body = @{
   locationFrom="a";
@@ -388,11 +491,13 @@ curl -X POST -H "Content-Type: application/json" \
 #### Daily Statistics
 
 Powershell
+
 ```pwsh
 Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
 ```
 
 cUrl
+
 ```sh
 curl "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics?code=/<func_code>&date=2022-04-05"
 ```
@@ -400,11 +505,13 @@ curl "https://<name-of-the-functionapp>.azurewebsites.net/api/getdailystatistics
 #### Individual Transport
 
 Powershell
+
 ```pwsh
 Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
 ```
 
 cUrl
+
 ```sh
 curl "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
 ```
@@ -421,10 +528,10 @@ Add the connection string from arm deployment to `local.settings.json`. They wil
 {
   "IsEncrypted": false,
   "Values": {
-      "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-      "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-      // Add this:
-      "TransportsDbConnectionString":"<the-connection-string-from-arm>"
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    // Add this:
+    "TransportsDbConnectionString": "<the-connection-string-from-arm>"
   }
 }
 ```
@@ -439,7 +546,6 @@ Then use the requests from the section [Test](#Test).
 
 ### Storage Check
 
-
 Open [Azure Portal](https://portal.azure.com/) in you browser.
 
 Find the SQL Database resource.
@@ -448,7 +554,6 @@ Go to Query Editor in the left panel.
 
 Login using the admin credentials.
 
-Find the table: Tables -> dbo.Transports. 
+Find the table: Tables -> dbo.Transports.
 
 Right-click and select "Select Top 1000 Rows".
-
