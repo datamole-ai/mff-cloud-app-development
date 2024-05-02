@@ -2,11 +2,18 @@
 
 # Horizontal vs. vertical scaling
 
-TODO
+||Horizontal (scale-out)|Vertical (scale-up)|
+|--|--|--|
+|What is it?|“Adding more machines”|“Making the machines larger”|
+|How complex is it in the beginning ?|Might be very complicated. The system architecture becomes distributed.|Easy. The system architecture remains the same. It can run as a simple single process.|
+|How complex is it later?|Once the system already works on multiple machines, adding more machines is relatively easy.|Provisioning and managing larger machines is more complicated.|
+|Limits?|Virtually unlimited.|Very hard physical limits. What is largest RAM/CPU that exist?|
 
 # Partitioning & replication
 
-TODO
+* Techniques that enable systems to be horizontally-scalable
+* Can be applied to both storage and compute.
+* They are not exclusive. System can be both partitioned and replicated.
 
 ## Replication (storage)
 
@@ -30,7 +37,20 @@ TODO
 
 # CAP / PACELC theorem
 
-TODO
+* **P** = Partition-tolerance.
+* **A** = Availability.
+* **C** = Consistency.
+* **L** = Latency.
+
+**CAP theorem:** In case of network partition, a distributed system cannot be both consistent and available. Each system can be classified as either AP or CP.
+
+${\huge \textbf{P} \Rightarrow \textbf{A} \oplus \textbf{C}}$
+
+**PACELC theorem:** even without network partition, we need to choose between latency (EL system) and consistency (EC system).
+
+${\huge if \: \textbf{P} \: \{ \ \textbf{A} \oplus \textbf{C} \ \}  \: else \: \{ \ \textbf{L} \oplus \textbf{C} \ \}}$
+
+Note: In this context, the (network) partition refers to failure in communication amongst two or more nodes/machines.
 
 ![CAP/PACELC](./imgs/cap-pacelc.png)
 
@@ -55,7 +75,7 @@ The data access patterns stay the same.
 
 **Our task:**
 
-* Optimize the storage for higer traffic and higher amounts of data stored
+* Optimize the storage for higher traffic and higher amounts of data stored
 * Design the changes needed to add the web application to the system
 
 
