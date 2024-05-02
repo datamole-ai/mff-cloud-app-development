@@ -10,7 +10,7 @@ The goal of the subcourse is to:
 
 There will be 5 lessons and one semestral project in total. First four lessons will be used to deliver most of the planned content and the last lesson will be dedicated for the presentation of the semestral projects.
 
-# Lesson Outline
+# Course Outline
 
 * **Lesson 1** (25. 04. 2024)
   * Introduction.
