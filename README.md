@@ -23,11 +23,12 @@ There will be 5 lessons and one semestral project in total. First four lessons w
   * Types, scalability and economical aspects of various storages.
   * Overview of relevant Azure resources - Storage (Tables, Blobs), App Service.
   * Case study (continued - scalable storage).
+  * For more details visit [lesson-2](./lesson-2/README.md).
 
 * **Lesson 3** (09. 05. 2024)
   * Asynchronous communication, messaging.
   * Overview of relevant Azure resources - Event Hubs, Service Bus, Functions with Event Hub trigger.
-  * Case study (continueed - asynchronous communication)
+  * Case study (continued - asynchronous communication)
 
 * **Lesson 4** (16. 05. 2024)
   * Observability, OpenTelemetry, Instrumentation and Troubleshooting of Cloud Services.
