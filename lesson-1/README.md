@@ -154,15 +154,15 @@ Devices (clients) that are distributed across the globe (or at least across mult
 
 ## Azure SQL Database
 
-Azure Docs: https://learn.microsoft.com/en-us/azure/azure-sql/database
-
 PaaS serving as a general-purpose SQL transactional database built on-top of the Microsoft SQL Server.
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/azure-sql/database
 
 ## Azure Functions
 
-Azure Docs: https://docs.microsoft.com/en-us/azure/azure-functions/
-
 Serverless PaaS for running pieces of code (functions) with minimal management overhead.
+
+Azure Docs: https://docs.microsoft.com/en-us/azure/azure-functions/
 
 ### HTTP Trigger
 
@@ -170,9 +170,9 @@ The function is triggered by an HTTP request and its return value is the HTTP re
 
 ## Azure Resource Manager (ARM) Templates
 
-Azure Docs: https://docs.microsoft.com/en-us/azure/templates/
-
 Infrastructure as Code (IaC) tool for Azure services. It allows to define the infrastructure in a declarative way (JSON). It is useful to manage large deployments in repeatable and predictable way.
+
+Azure Docs: https://docs.microsoft.com/en-us/azure/templates/
 
 ```json
 {
