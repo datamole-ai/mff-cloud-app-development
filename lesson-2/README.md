@@ -48,7 +48,7 @@ ${\huge \textbf{P} \Rightarrow \textbf{A} \oplus \textbf{C}}$
 
 **PACELC theorem:** even without network partition, we need to choose between latency (EL system) and consistency (EC system).
 
-${\huge if \: \textbf{P} \: \lbrace \ \textbf{A} \oplus \textbf{C} \ \rbrace  \: else \: \lbrace \ \textbf{L} \oplus \textbf{C} \ \rbrace}$
+${\huge if \medspace \textbf{P} \medspace \lbrace \ \textbf{A} \oplus \textbf{C} \ \rbrace  \medspace else \medspace \lbrace \ \textbf{L} \oplus \textbf{C} \ \rbrace}$
 
 Note: In this context, the (network) partition refers to failure in communication amongst two or more nodes/machines.
 
