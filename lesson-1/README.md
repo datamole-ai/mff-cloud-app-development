@@ -154,15 +154,15 @@ Devices (clients) that are distributed across the globe (or at least across mult
 
 ## Azure SQL Database
 
-Azure Docs: https://learn.microsoft.com/en-us/azure/azure-sql/database
-
 PaaS serving as a general-purpose SQL transactional database built on-top of the Microsoft SQL Server.
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/azure-sql/database
 
 ## Azure Functions
 
-Azure Docs: https://docs.microsoft.com/en-us/azure/azure-functions/
-
 Serverless PaaS for running pieces of code (functions) with minimal management overhead.
+
+Azure Docs: https://docs.microsoft.com/en-us/azure/azure-functions/
 
 ### HTTP Trigger
 
@@ -170,9 +170,9 @@ The function is triggered by an HTTP request and its return value is the HTTP re
 
 ## Azure Resource Manager (ARM) Templates
 
-Azure Docs: https://docs.microsoft.com/en-us/azure/templates/
-
 Infrastructure as Code (IaC) tool for Azure services. It allows to define the infrastructure in a declarative way (JSON). It is useful to manage large deployments in repeatable and predictable way.
+
+Azure Docs: https://docs.microsoft.com/en-us/azure/templates/
 
 ```json
 {
@@ -340,7 +340,7 @@ Navigate to the `lesson-1/arm` directory and see the [ARM template](/lesson-1/ar
 - Storage Account
 - App Insights
 
-First thing is to create a new resource group. In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-<name>-<surname>").
+First thing is to create a new resource group. In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-{name}-{surname}").
 
 ```pswh
 az group create --location 'WestEurope' -n <resource-group>
@@ -371,7 +371,7 @@ You should copy the Connection String to the database for local development. It 
 }
 ```
 
-### Create Azure Functions from a template
+## Create Azure Functions from a template
 
 Prerequisites: [Azure Functions Core](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools)
 
