@@ -1,12 +1,49 @@
 # Lesson 1
 
-## Overview of relevant Azure resources
+# Horizontal vs. vertical scaling
+
+TODO
+
+# Partitioning & replication
+
+TODO
+
+## Replication (storage)
+
+![Replication (storage)](./imgs/replication-storage.png)
+
+## Partitioning (storage)
+
+![Partitioning (storage)](./imgs/partitioning-storage.png)
+
+## Replication (compute)
+
+![Replication (compute)](./imgs/replication-compute.png)
+
+## Partitioning (compute)
+
+![Partitioning (compute)](./imgs/partitioning-compute.png)
+
+## Partitioning & Replication combined (storage)
+
+![Partitioning & Replication combined (storage)](./imgs/partitioning-replication-combined-storage.png)
+
+# CAP / PACELC theorem
+
+TODO
+
+![CAP/PACELC](./imgs/cap-pacelc.png)
+
+# Overview of relevant Azure resources
+
+TODO
+
 * [Azure Storage](https://learn.microsoft.com/en-us/azure/storage/)
   * [Blobs](https://learn.microsoft.com/en-us/azure/storage/blobs/)
   * [Tables](https://learn.microsoft.com/en-us/azure/storage/tables/)
 * [Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/)
 
-## Case study problem statement
+# Case study problem statement
 
 The business of your client is thriving! 
 
@@ -22,10 +59,10 @@ The data access patterns stay the same.
 * Design the changes needed to add the web application to the system
 
 
-### The Original Design
+## The Original Design
 ![Design](./imgs/diagram_1.png)
 
-### Ideas - discussion
+## Ideas - discussion
 
 
 ## Resulting design
