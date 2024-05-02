@@ -17,18 +17,18 @@ There will be 5 lessons and one semestral project in total. First four lessons w
   * Specifics of software engineering for IoT and cloud.
   * Overview of relevant Azure resources - SQL, Functions with HTTP trigger, ARM Templates. 
   * Case study (basic solution).
-  * For more details visit [lesson-1.md](./lesson-1/lesson-1.md).
+  * For more details visit [lesson-1](./lesson-1/README.md).
 
 * **Lesson 2** (02. 05. 2024)
   * Types, scalability and economical aspects of various storages.
   * Overview of relevant Azure resources - Storage (Tables, Blobs), App Service.
   * Case study (continued - scalable storage).
-  * For more details visit [lesson-2.md](./lesson-2/lesson-2.md).
+  * For more details visit [lesson-2](./lesson-2/README.md).
 
 * **Lesson 3** (09. 05. 2024)
   * Asynchronous communication, messaging.
   * Overview of relevant Azure resources - Event Hubs, Service Bus, Functions with Event Hub trigger.
-  * Case study (continueed - asynchronous communication)
+  * Case study (continued - asynchronous communication)
 
 * **Lesson 4** (16. 05. 2024)
   * Observability, OpenTelemetry, Instrumentation and Troubleshooting of Cloud Services.
