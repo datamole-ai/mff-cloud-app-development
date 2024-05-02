@@ -2,18 +2,18 @@
 
 # Horizontal vs. vertical scaling
 
-||Horizontal (scale-out)|Vertical (scale-up)|
-|--|--|--|
-|What is it?|“Adding more machines”|“Making the machines larger”|
-|How complex is it in the beginning ?|Might be very complicated. The system architecture becomes distributed.|Easy. The system architecture remains the same. It can run as a simple single process.|
-|How complex is it later?|Once the system already works on multiple machines, adding more machines is relatively easy.|Provisioning and managing larger machines is more complicated.|
-|Limits?|Virtually unlimited.|Very hard physical limits. What is largest RAM/CPU that exist?|
+|                                      | Horizontal (scale-out)                                                                       | Vertical (scale-up)                                                                    |
+| ------------------------------------ | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| What is it?                          | “Adding more machines”                                                                       | “Making the machines larger”                                                           |
+| How complex is it in the beginning ? | Might be very complicated. The system architecture becomes distributed.                      | Easy. The system architecture remains the same. It can run as a simple single process. |
+| How complex is it later?             | Once the system already works on multiple machines, adding more machines is relatively easy. | Provisioning and managing larger machines is more complicated.                         |
+| Limits?                              | Virtually unlimited.                                                                         | Very hard physical limits. What is largest RAM/CPU that exist?                         |
 
 # Partitioning & replication
 
-* Techniques that enable systems to be horizontally-scalable
-* Can be applied to both storage and compute.
-* They are not exclusive. System can be both partitioned and replicated.
+- Techniques that enable systems to be horizontally-scalable
+- Can be applied to both storage and compute.
+- They are not exclusive. System can be both partitioned and replicated.
 
 ## Replication (storage)
 
@@ -37,10 +37,10 @@
 
 # CAP / PACELC theorem
 
-* **P** = Partition-tolerance.
-* **A** = Availability.
-* **C** = Consistency.
-* **L** = Latency.
+- **P** = Partition-tolerance.
+- **A** = Availability.
+- **C** = Consistency.
+- **L** = Latency.
 
 **CAP theorem:** In case of network partition, a distributed system cannot be both consistent and available. Each system can be classified as either AP or CP.
 
@@ -56,16 +56,61 @@ Note: In this context, the (network) partition refers to failure in communicatio
 
 # Overview of relevant Azure resources
 
-TODO
+## Azure Storage
 
-* [Azure Storage](https://learn.microsoft.com/en-us/azure/storage/)
-  * [Blobs](https://learn.microsoft.com/en-us/azure/storage/blobs/)
-  * [Tables](https://learn.microsoft.com/en-us/azure/storage/tables/)
-* [Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/)
+Highly-available, scalable, and durable storage for data.
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/storage/tables/
+
+### Blobs
+
+Object storage optimized for storing massive amounts of unstructured data.
+
+- **Key** = `Blob Name` (filesystem-like path, e.g. `images/2024-05-02/parcels/parcel-1234.jpg`)
+- **Value** = `Blob` (binary data + metadata, which are few short key-value pairs)
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/storage/blobs/
+
+### Tables
+
+Key-value storage for semi-structured data.
+
+- **Key** = `Partition Key` + `Row Key` (strings).
+- **Value** = `Entity` (set of strongly-typed `Properties`, each with a name and a value).
+
+The `Partition Key` and `Row Key` structure must be carefully designed to optimize the access patterns:
+
+#### Partitioning
+
+- All entities with the same `Partition Key` are stored on the same partition and single node.
+  - Transactions are available only within a single partition.
+  - Throughput of single partition is limited.
+- One node can contain multiple partitions.
+- Partitions can be moved between nodes automatically.
+
+#### Queries
+
+- `Point query` (e.g. single entity with `Partition Key` = `X` and `Row Key` = `Y`)
+- `Range query` (e.g. all entities with `Partition Key` = `X` and `Row Key` between `A` and `B`)
+
+### Replication
+
+* **LRS**: 3 copies in a single data center.
+* **ZRS**: 3 copies in 3 data centers within a single region.
+* **GRS**: 3 copies in a primary data center and 3 copies in a secondary data center in a different region (distance > hundreds of kilometers).
+  * **RA-GRS**
+* **GZRS**: 3 copies in 3 data centers within a single primary region and  3 copies in one secondary data center in a different region.
+
+
+## Azure App Service
+
+PaaS serving as a general-purpose managed web server.
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/app-service/
 
 # Case study problem statement
 
-The business of your client is thriving! 
+The business of your client is thriving!
 
 Now, they have hundreds of sorting facilities and the projection is to store tens of TBs of data. They already hit the storage limits of the general-purpose Azure SQL and the price gets very high.
 
@@ -75,20 +120,18 @@ The data access patterns stay the same.
 
 **Our task:**
 
-* Optimize the storage for higher traffic and higher amounts of data stored
-* Design the changes needed to add the web application to the system
-
+- Optimize the storage for higher traffic and higher amounts of data stored
+- Design the changes needed to add the web application to the system
 
 ## The Original Design
+
 ![Design](./imgs/diagram_1.png)
 
 ## Ideas - discussion
 
-
 ## Resulting design
 
 ![Design](./imgs/diagram_2.png)
-
 
 ## Components
 
@@ -105,7 +148,6 @@ Azure Table
 
 We should ideally use one table per day, so we can efficiently delete the data according to our retention policy.
 
-
 ```
 PartitionKey: <TransportedDate>_<FacilityId>
 RowKey: <ParcelId>
@@ -120,7 +162,6 @@ DeviceId: string
 TransportId: string
 ```
 
-
 ## Implementation
 
 ### Deployment
@@ -132,11 +173,13 @@ Clone the repository
 ```
 git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 ```
+
 Navigate to the `lesson-2/arm` directory and see the [ARM template](/lesson-1/arm/resources.azrm.json). It contains
-* Function App
-* Storage Account with a precreated table
-* App Insights
-* App Service
+
+- Function App
+- Storage Account with a precreated table
+- App Insights
+- App Service
 
 First thing is to create a new resource group (or reuse the one from the previous lesson). In the following command, replace the `<resource-group>` with your own name (e.g. "mff-iot-{name}-{surname}").
 
@@ -175,6 +218,7 @@ For local development, you need to copy the output values. It should appear in t
 ```
 
 ### Deploy the Functions
+
 Deploy the new versions of the functions. You'll find the name of the function app in the output of the deployment command (it is defined as `mff-iot-fa-<suffix>`).
 
 ```
@@ -187,11 +231,13 @@ func azure functionApp publish "<name-of-the-functionapp>" --show-keys
 Go to `lesson-2/sln/WebAppBackend`
 
 It is possible to deploy the app directly from your IDE:
+
 - Visual Studio, Rider (with Azure plugin) - Right-click on the project -> Publish
 
 #### Deployment with az cli
 
 Publish the project:
+
 ```shell
 dotnet publish
 ```
@@ -209,7 +255,6 @@ Upload the zip file to Azure via az cli:
 az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resource-group-name>
 ```
 
-
 ## Test
 
 ### Backend for Frontend
@@ -217,11 +262,13 @@ az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resou
 #### Individual Transport
 
 Powershell
+
 ```pwsh
 Invoke-WebRequest -Uri "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
 ```
 
 cUrl
+
 ```sh
 curl "https://<name-of-the-functionapp>.azurewebsites.net/api/gettransport?code=/<func_code>&date=2022-04-05&facilityId=prague&parcelId=123"
 ```
@@ -240,10 +287,10 @@ Add the connection string from arm deployment to `/sln/AzureFunctions/local.sett
 {
   "IsEncrypted": false,
   "Values": {
-      "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-      "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-      // Add this:
-      "TransportsStorageConnectionsString":"<the-connection-string-from-arm>"
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    // Add this:
+    "TransportsStorageConnectionsString": "<the-connection-string-from-arm>"
   }
 }
 ```
@@ -260,10 +307,10 @@ Create file `/sln/WebAppBackend/appsettings.Development.json` with the function 
 
 ```json
 {
-    "StatsReporter": {
-        "FunctionHostKey": "<function-host-key>",
-        "FunctionHostUrl": "<function-host-url>"
-    }
+  "StatsReporter": {
+    "FunctionHostKey": "<function-host-key>",
+    "FunctionHostUrl": "<function-host-url>"
+  }
 }
 ```
 
@@ -278,4 +325,3 @@ Find the Storage Account resource.
 Go to the "Storage browser" in the left panel.
 
 Click on Tables and view the "transports" table.
-
