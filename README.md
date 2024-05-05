@@ -29,6 +29,7 @@ There will be 5 lessons and one semestral project in total. First four lessons w
   * Asynchronous communication, messaging.
   * Overview of relevant Azure resources - Event Hubs, Service Bus, Functions with Event Hub trigger.
   * Case study (continued - asynchronous communication)
+  * For more details visit [lesson-3](./lesson-2/README.md).
 
 * **Lesson 4** (16. 05. 2024)
   * Observability, OpenTelemetry, Instrumentation and Troubleshooting of Cloud Services.
