@@ -1,13 +1,12 @@
-using System.Text.Json;
-
-using Azure.Messaging.EventHubs;
-
 using AzureFunctions.Models;
 using AzureFunctions.Services;
 
-
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+
+using FromBodyAttribute = Microsoft.Azure.Functions.Worker.Http.FromBodyAttribute;
 
 
 namespace AzureFunctions.Api;
@@ -15,28 +14,18 @@ namespace AzureFunctions.Api;
 public class EventConsumer(TransportsRepository transportsRepository, ILogger<EventConsumer> logger)
 {
     [Function("EventConsumer")]
-    public async Task Run(
-        [EventHubTrigger("transports", Connection = "EventHubConnectionString")] EventData[] events, CancellationToken cancellationToken)
+    public async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req, [FromBody] Transport? transport, CancellationToken cancellationToken)
     {
-        foreach (var eventData in events)
+        if (transport is null)
         {
-            Transport? transport = null;
-
-            try
-            {
-                transport = JsonSerializer.Deserialize<Transport>(eventData.Body.Span);
-            } 
-            catch (JsonException ex)
-            {
-                logger.LogError(ex, "Failed to deserialize transport");
-            }
-
-            if (transport is not null)
-            {
-                await transportsRepository.SaveTransportAsync(transport, cancellationToken);
-            }
+            return new BadRequestResult();
         }
-        
-        logger.LogInformation("Batch of {length} events processed.", events.Length);
+
+        await transportsRepository.SaveTransportAsync(transport, cancellationToken);
+
+        logger.LogInformation("Transport {transport} saved.", transport);
+
+        return new CreatedResult(null as string, transport);
     }
 }
