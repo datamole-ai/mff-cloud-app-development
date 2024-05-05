@@ -10,7 +10,7 @@ public class GetDailyStatistics(AggregationService aggregationService)
 {
     [Function("GetDailyStatistics")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req, CancellationToken cancellationToken)
     {
         req.Query.TryGetValue("date", out var dateQuery);
 
@@ -19,10 +19,6 @@ public class GetDailyStatistics(AggregationService aggregationService)
             return new BadRequestResult();
         }
 
-        return await aggregationService.GetDayStatisticsAsync(date) switch
-        {
-            { } dayStatistics => new OkObjectResult(dayStatistics),
-            _ => new NoContentResult()
-        };
+        return new OkObjectResult(await aggregationService.GetDayStatisticsAsync(date, cancellationToken));
     }
 }

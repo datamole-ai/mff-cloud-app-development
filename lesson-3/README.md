@@ -2,28 +2,29 @@
 
 # Case study problem statement
 
-The business of your client is thriving!
+The client wants to detect problems with the devices in the sorting facilities.
+So they want us to deploy a real-time anomaly detection algorithm on the data sent from the devices.
 
-Now, they have hundreds of sorting facilities and the projection is to store tens of TBs of data. They already hit the storage limits of the general-purpose Azure SQL and the price gets very high.
-
-They want to present transportation data via a web application accessible to their technicians for troubleshooting within the facilities. Initially, the application will provide data from our existing APIs alongside additional device information from the client's "Device Inventory Service". It is expected that the app will include data from more services, both ours and those of our client.
-
-The data access patterns stay the same.
+The client is not happy that the endpoint for daily statistics takes so long.
+We agreed to implement a caching mechanism to ensure that only the initial query is slow.
 
 **Our task:**
 
-- Optimize the storage for higher traffic and higher amounts of data stored
-- Design the changes needed to add the web application to the system
+- Modify the architecture so that the anomaly detection algorithm can process the data alongside our event consumer (the one which stores the data).
+- Implement a caching mechanism for the daily statistics query.
 
-## The Original Design
 
+## The Original Designs
 ![Design](./imgs/diagram_1.png)
+
+![Design](./imgs/diagram_2.png)
 
 ## Ideas - discussion
 
-## Resulting design
+## The Final Architecture
 
-![Design](./imgs/diagram_2.png)
+![Design](./imgs/diagram_3.png)
+
 
 ## Components
 
@@ -31,28 +32,17 @@ The data access patterns stay the same.
 - **Stats Reporter**, Azure Function with HTTP trigger
 - **Backend for Frontend**, Azure App Service
 - **Storage**, Azure Tables
+- **Stats Cache**, Azure Tables
 
-## Storage Design
+## Event Hub
 
-Azure Table
+- **Partition Key**: DeviceId
+  - Ensures in-order processing of events per one device
+  - Ensures that the data from one device will be processed by the same instance of the Anomaly Detection algorithm
+- **Consumer Groups**
+  - One for the Event Consumer which stores the data
+  - One for the Anomaly Detection algorithm
 
-### Transport Table Entity
-
-We should ideally use one table per day, so we can efficiently delete the data according to our retention policy.
-
-```
-PartitionKey: <TransportedDate>_<FacilityId>
-RowKey: <ParcelId>
-
-FacilityId: string
-ParcelId: string
-TransportedAt: DateTime
-LocationFrom: string
-LocationTo: string
-TimeSpentSeconds: int
-DeviceId: string
-TransportId: string
-```
 
 ## Implementation
 
@@ -66,7 +56,7 @@ Clone the repository
 git clone https://github.com/datamole-ai/mff-cloud-app-development.git
 ```
 
-Navigate to the `lesson-2/arm` directory and see the [ARM template](/lesson-1/arm/resources.azrm.json). It contains
+Navigate to the `lesson-3/arm` directory and see the [ARM template](/lesson-3/arm/resources.azrm.json). It contains
 
 - Function App
 - Storage Account with a precreated table
@@ -79,7 +69,7 @@ First thing is to create a new resource group (or reuse the one from the previou
 az group create --location 'WestEurope' -n <resource-group>
 ```
 
-Then, deploy the infrastructure defined in `lesson-2/arm/resources.azrm.json` with the following command. Define the suffix parameter, e.g. your surname. The suffix is used in the names of the resources, so they are unique.
+Then, deploy the infrastructure defined in `lesson-3/arm/resources.azrm.json` with the following command. Define the suffix parameter, e.g. your surname. The suffix is used in the names of the resources, so they are unique.
 
 ```pwsh
 cd lesson-2/arm
@@ -114,13 +104,13 @@ For local development, you need to copy the output values. It should appear in t
 Deploy the new versions of the functions. You'll find the name of the function app in the output of the deployment command (it is defined as `mff-iot-fa-<suffix>`).
 
 ```
-cd lesson-2/sln/AzureFunctions
+cd lesson-3/sln/AzureFunctions
 func azure functionApp publish "<name-of-the-functionapp>" --show-keys
 ```
 
 ### Deploy the Web App
 
-Go to `lesson-2/sln/WebAppBackend`
+Go to `lesson-3/sln/WebAppBackend`
 
 It is possible to deploy the app directly from your IDE:
 
@@ -151,58 +141,15 @@ az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resou
 
 ### Send Events to the Consumer Function
 
-Request Method: `POST`
+The `EventsGenerator` projects generates and sends events for the past few days. 
 
-Request Query Parameters: None
+To generate the events run the project:
 
-Request Body:
+```shell
+cd lesson-3/sln/EventsGenerator
 
-```json
-{
-  "parcelId": "12345",
-  "facilityId": "prague",
-  "transportedAt": "2022-04-05T15:01:02Z",
-  "locationFrom": "in-25",
-  "locationTo": "out-35",
-  "transportDurationSec": 50,
-  "deviceId": "sorter-1654345",
-  "transportId": "a1ds3e8r"
-}
-````
-
-Response Code:
-
-- `201 Created` - Event was successfully stored.
-- `400 Bad Request` - Body is not in the correct form.
-
-
-Powershell
-
-```pwsh
-$body = @{
-  locationFrom="a";
-  locationTo="b";
-  transportDurationSec=30;
-  parcelId="1";
-  transportedAt="2022-04-05T15:01:02Z";
-  deviceId="sorter-123";
-  facilityId="facility-123";
-  transportId="t-4156";
-} | ConvertTo-Json
-
-Invoke-WebRequest -Uri <event-consumer-uri> -Method Post -Body $body -ContentType "application/json"
+dotnet run -- "<event-hub-sender-connection-string>"
 ```
-
-cURL
-
-```sh
-curl -X POST -H "Content-Type: application/json" \
-    -d '{"parcelId": "12345","facilityId": "prague","transportedAt": "2022-04-05T15:01:02Z", "locationFrom": "in-25",  "locationTo": "out-35",  "transportDurationSec": 50,  "deviceId": "sorter-1654345", "transportId": "t-4156"
-}' \
-    <URI>
-```
-
-Response Body: None
 
 ### Backend for Frontend
 
@@ -211,57 +158,27 @@ Response Body: None
 Powershell
 
 ```pwsh
-Invoke-WebRequest -Uri "<webapp-uri>/transports?date=2022-04-05&facilityId=prague&parcelId=123"
+Invoke-WebRequest -Uri "<webapp-uri>/transports?date=2024-04-05&facilityId=prague&parcelId=123"
 ```
 
 cUrl
 
 ```sh
-curl "<webapp-uri>/transports?date=2022-04-05&facilityId=prague&parcelId=123"
+curl "<webapp-uri>/transports?date=2024-04-05&facilityId=prague&parcelId=123"
 ```
+#### Daily Statistics
 
-Log output of each function can be read via Portal -> Function App `<name-of-the-functionapp>` -> Functions -> Select the Function -> Monitor -> Logs tab
-
-### Local Test
-
-#### Functions
-
-**NOTE:** Only http triggered function can be tested locally.
-
-Add the connection string from arm deployment to `/sln/AzureFunctions/local.settings.json`. They will be accessible to the function as enviromental variables and also automatically loaded as configuration.
-
-```json
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    // Add this:
-    "TransportsStorageConnectionsString": "<the-connection-string-from-arm>"
-  }
-}
-```
-
-Then navigate to `<project-root>/sln/AzureFunctions` and [run](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=windows%2Ccsharp%2Cbash#start)
+Powershell
 
 ```pwsh
-func start
+Invoke-WebRequest -Uri "<webapp-uri>/daily-statistics?date=2024-04-05"
 ```
 
-#### Backend for Frontend
+cUrl
 
-Create file `/sln/WebAppBackend/appsettings.Development.json` with the function app host key and the url. You can use the url from the output of the deployment. Alternatively, you can use a url of the locally executed functions. It will appear in the output of `func start` (somthing like this: `http://localhost:7071/`).
-
-```json
-{
-  "StatsReporter": {
-    "FunctionHostKey": "<function-host-key>",
-    "FunctionHostUrl": "<function-host-url>"
-  }
-}
+```sh
+curl "<webapp-uri>/daily-statistics?date=2024-04-05"
 ```
-
-Run the project in your IDE, or using `dotnet run` in the `/sln/WebAppBackend/` directory.
 
 ### Storage Check
 

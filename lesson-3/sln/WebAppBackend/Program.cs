@@ -59,5 +59,20 @@ app.MapGet("/transports",
     .WithName("GetTransport")
     .WithOpenApi();
 
+app.MapGet("/daily-statistics",
+        async (
+            [FromQuery(Name = "date")] string dateQuery,
+            [FromServices] StatsReporterClient reporterClient) =>
+        {
+            if (!DateOnly.TryParseExact(dateQuery, "yyyy-MM-dd", out var date))
+            {
+                return Results.BadRequest();
+            }
+
+            return Results.Ok(await reporterClient.GetDailyStatistics(date));
+        })
+    .WithName("GetTransport")
+    .WithOpenApi();
+
 
 app.Run();

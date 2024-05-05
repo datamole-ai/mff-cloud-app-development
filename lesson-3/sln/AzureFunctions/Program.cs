@@ -5,11 +5,11 @@ using Microsoft.Extensions.Hosting;
 var hostBuilder = new HostBuilder()
     .ConfigureFunctionsWebApplication();
 
-
-hostBuilder.ConfigureServices((context, collection) =>
+hostBuilder.ConfigureServices((_, services) =>
 {
-    collection.AddScoped<TransportsRepository>();
-    collection.AddScoped<AggregationService>();
+    services.AddScoped<TransportsRepository>();
+    services.AddScoped<StatisticsCacheRepository>();
+    services.AddScoped<AggregationService>();
 });
 
 hostBuilder

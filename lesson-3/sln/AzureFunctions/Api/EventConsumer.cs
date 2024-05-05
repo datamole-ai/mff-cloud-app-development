@@ -1,14 +1,13 @@
+using System.Text.Json;
+
 using Azure.Messaging.EventHubs;
 
 using AzureFunctions.Models;
 using AzureFunctions.Services;
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-
-using FromBodyAttribute = Microsoft.Azure.Functions.Worker.Http.FromBodyAttribute;
 
 
 namespace AzureFunctions.Api;
@@ -16,18 +15,32 @@ namespace AzureFunctions.Api;
 public class EventConsumer(TransportsRepository transportsRepository, ILogger<EventConsumer> logger)
 {
     [Function("EventConsumer")]
-    public async Task<IActionResult> Run(
-        [EventHubTrigger("transports", Connection = "EventhubNamespaceConnectionString")] EventData[] events, CancellationToken cancellationToken)
+    public async Task Run(
+        [EventHubTrigger("transports", Connection = "EventHubConnectionString")] EventData[] events, CancellationToken cancellationToken)
     {
-        if (transport is null)
+        await Parallel.ForEachAsync(events, new ParallelOptions()
         {
-            return new BadRequestResult();
-        }
+            CancellationToken = cancellationToken,
+            MaxDegreeOfParallelism = 100
+        }, async (eventData, token) =>
+        {
+            Transport? transport = null;
 
-        await transportsRepository.SaveTransportAsync(transport, cancellationToken);
+            try
+            {
+                transport = JsonSerializer.Deserialize<Transport>(eventData.Body.Span);
+            }
+            catch (JsonException ex)
+            {
+                logger.LogError(ex, "Failed to deserialize transport");
+            }
 
-        logger.LogInformation("Transport {transport} saved.", transport);
-
-        return new CreatedResult(null as string, transport);
+            if (transport is not null)
+            {
+                await transportsRepository.SaveTransportAsync(transport, token);
+            }
+        });
+        
+        logger.LogInformation("Batch of {length} events processed.", events.Length);
     }
 }

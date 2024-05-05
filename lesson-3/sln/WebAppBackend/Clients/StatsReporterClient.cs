@@ -19,4 +19,11 @@ public class StatsReporterClient(IHttpClientFactory httpClientFactory)
 
         return null;
     }
+    
+    public async Task<DayStatistics> GetDailyStatistics(DateOnly date)
+    {
+        var response = await httpClient.GetAsync($"api/GetDailyStatistics?date={date:yyyy-MM-dd}");
+
+        return await response.Content.ReadFromJsonAsync<DayStatistics>() ?? new DayStatistics(date, 0, double.NaN);
+    }
 }
