@@ -75,7 +75,7 @@ The Service Support Application Team has good skills in enterprise integration a
 
 ### Observability
 
-Specify three metric instruments that would enhance the observability of the system. Include one example of each basic metric type: counter, gauge, and histogram. The definition should include Name, Kind, Description and Unit (if applicable).
+Define three metrics that would enhance the observability of the system. Include one example of each basic metric type: counter, gauge, and histogram. The definition should include Name, Kind, Description and Unit (if applicable).
 
 Choose one endpoint of the web application and describe the trace of a request. Draw a simple flame graph. Provide a sample JSON representation of each span, containing all required information to build the trace. Include a few attributes you find valuable to capture (you don't need to include every attribute that is recommended by OpenTelemetry).
 
