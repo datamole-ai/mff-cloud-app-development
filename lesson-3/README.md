@@ -72,7 +72,7 @@ az group create --location 'WestEurope' -n <resource-group>
 Then, deploy the infrastructure defined in `lesson-3/arm/resources.azrm.json` with the following command. Define the suffix parameter, e.g. your surname. The suffix is used in the names of the resources, so they are unique.
 
 ```pwsh
-cd lesson-2/arm
+cd lesson-3/arm
 az deployment group create `
   --name "deploy-mff-task-components" `
   --resource-group "<resource-group>" `
@@ -80,7 +80,7 @@ az deployment group create `
   --parameters suffix="<suffix>"
 ```
 
-For local development, you need to copy the output values. It should appear in the output as follows:
+You'll need to store the connection string to the Event Hub, so you can send some events. It should appear in the output as follows:
 
 ```json
 "outputs": {
@@ -91,6 +91,10 @@ For local development, you need to copy the output values. It should appear in t
       "functionsHostUrl": {
         "type": "String",
         "value": "<functionHostUrl>"
+      },
+      "senderEventHubConnectionString": {
+        "type": "String",
+        "value": "<eventhubSenderConnectionString>"
       },
       "storageAccountConnectionString": {
         "type": "String",

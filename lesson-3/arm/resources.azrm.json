@@ -231,10 +231,6 @@
             "type": "string",
             "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('functionAppName'))).defaultHostName)]"
         },
-        "listenerEventHubConnectionString": {
-            "type": "string",
-            "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('eventsListenerAuthorizationRule')), '2017-04-01').primaryConnectionString]"
-        },
         "senderEventHubConnectionString": {
             "type": "string",
             "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('eventsSenderAuthorizationRule')), '2017-04-01').primaryConnectionString]"
