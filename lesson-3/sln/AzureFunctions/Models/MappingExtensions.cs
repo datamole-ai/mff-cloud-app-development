@@ -23,6 +23,6 @@ public static class MappingExtensions
                 _ => throw new InvalidOperationException("Invalid partition key")
             },
             TotalTransportedCount: statisticsCacheEntity.TotalTransportedCount,
-            AverageTransportationTimeSeconds: statisticsCacheEntity.AverageTransportationTime);
+            AverageTransportationTimeSeconds: statisticsCacheEntity.AverageTransportationTimeSeconds);
     }
 }
