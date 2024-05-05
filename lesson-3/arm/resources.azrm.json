@@ -6,13 +6,85 @@
     },
     "variables": {
         "transportsTableName": "transports",
+        "statisticsTableName": "statisticsCache",
         "appServicePlanName": "mffiotasp",
         "webAppName": "[concat('mff-iot-webapp-', parameters('suffix'))]",
         "functionAppName": "[concat('mff-iot-fa-', parameters('suffix'))]",
         "appInsightsName": "[concat('mff-iot-ai-', parameters('suffix'))]",
-        "storageAccountName": "[concat('mffiot', parameters('suffix'))]"
+        "storageAccountName": "[concat('mffiot', parameters('suffix'))]",
+        "eventHubNamespaceName": "[concat('mff-iot-ehns-', parameters('suffix'))]",
+        "eventHubName": "transports",
+        "eventsSenderAuthorizationRule": "sender",
+        "eventsListenerAuthorizationRule": "listener"
     },
     "resources": [
+        {
+            "type": "Microsoft.EventHub/namespaces",
+            "name": "[variables('eventHubNamespaceName')]",
+            "apiVersion": "2017-04-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {},
+            "resources": [
+                {
+                    "type": "eventhubs",
+                    "name": "[variables('eventHubName')]",
+                    "apiVersion": "2017-04-01",
+                    "dependsOn": [
+                        "[variables('eventHubNamespaceName')]"
+                    ],
+                    "properties": {},
+                    "resources": [
+                        {
+                            "type": "authorizationRules",
+                            "name": "[variables('eventsSenderAuthorizationRule')]",
+                            "apiVersion": "2017-04-01",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('eventHubNamespaceName'), variables('eventHubName'))]"
+                            ],
+                            "properties": {
+                                "rights": [
+                                    "Send"
+                                ]
+                            }
+                        },
+                        {
+                            "type": "authorizationRules",
+                            "name": "[variables('eventsListenerAuthorizationRule')]",
+                            "apiVersion": "2017-04-01",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('eventHubNamespaceName'), variables('eventHubName'))]"
+                            ],
+                            "properties": {
+                                "rights": [
+                                    "Listen"
+                                ]
+                            }
+                        },
+                        {
+                            "type": "consumerGroups",
+                            "name": "processing-consumer-group",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('eventHubNamespaceName'), variables('eventHubName'))]"
+                            ],
+                            "apiVersion": "2017-04-01",
+                            "properties": {}
+                        },
+                        {
+                            "type": "consumerGroups",
+                            "name": "anomaly-detection-consumer-group",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('eventHubNamespaceName'), variables('eventHubName'))]"
+                            ],
+                            "apiVersion": "2017-04-01",
+                            "properties": {}
+                        }
+                    ]
+                }
+            ]
+        },
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2023-01-01",
@@ -36,6 +108,14 @@
                     "type": "tableServices/tables",
                     "apiVersion": "2022-05-01",
                     "name": "[concat('default/', variables('transportsTableName'))]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+                    ]
+                },
+                {
+                    "type": "tableServices/tables",
+                    "apiVersion": "2022-05-01",
+                    "name": "[concat('default/', variables('statisticsTableName'))]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
                     ]
@@ -91,6 +171,10 @@
                         {
                             "name": "TransportsStorageConnectionsString",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';EndpointSuffix=', environment().suffixes.storage, ';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value)]"
+                        },
+                        {
+                            "name": "EventHubConnectionString",
+                            "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('eventsListenerAuthorizationRule')), '2017-04-01').primaryConnectionString]"
                         }
                     ]
                 }
@@ -146,6 +230,14 @@
         "functionsHostUrl": {
             "type": "string",
             "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('functionAppName'))).defaultHostName)]"
+        },
+        "listenerEventHubConnectionString": {
+            "type": "string",
+            "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('eventsListenerAuthorizationRule')), '2017-04-01').primaryConnectionString]"
+        },
+        "senderEventHubConnectionString": {
+            "type": "string",
+            "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('eventsSenderAuthorizationRule')), '2017-04-01').primaryConnectionString]"
         }
     }
 }

@@ -2,10 +2,17 @@ using AzureFunctions.Models;
 
 namespace AzureFunctions.Services;
 
-public class AggregationService(TransportsRepository transportsRepository)
+public class AggregationService(TransportsRepository transportsRepository, StatisticsCacheRepository statisticsCacheRepository)
 {
-    public async Task<DayStatistics?> GetDayStatisticsAsync(DateOnly date)
+    public async Task<DayStatistics> GetDayStatisticsAsync(DateOnly date, CancellationToken cancellationToken)
     {
+        var statistics = await statisticsCacheRepository.FindStatisticsAsync(date, cancellationToken);    
+        
+        if (statistics is not null)
+        {
+            return statistics;
+        }
+        
         var transports = transportsRepository.GetTransportsByDateAsync(date);
 
         var totalTransportedCount = 0;
@@ -17,7 +24,14 @@ public class AggregationService(TransportsRepository transportsRepository)
             totalTimeSpentSeconds += transport.TimeSpentSeconds;
         }
 
-        return totalTransportedCount == 0 ? null : 
-            new(date, totalTransportedCount, totalTimeSpentSeconds / (double) totalTransportedCount);
+        var computedStatistics = totalTransportedCount == 0 ? null : 
+            new DayStatistics(date, totalTransportedCount, totalTimeSpentSeconds / (double) totalTransportedCount);
+
+        if (computedStatistics is not null)
+        {
+            await statisticsCacheRepository.SaveStatisticsAsync(computedStatistics, cancellationToken);
+        }
+
+        return computedStatistics ?? new DayStatistics(date, 0, double.NaN);
     }
 }
