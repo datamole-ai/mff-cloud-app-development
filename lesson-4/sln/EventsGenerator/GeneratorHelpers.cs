@@ -3,7 +3,7 @@ namespace EventsGenerator;
 public static class GeneratorHelpers
 {
     public static int ParcelCounter { get; private set; }
-    public const int ParcelsPerDay = 10000;
+    public const int ParcelsPerDay = 20000;
     public const int Days = 10;
     
     public static int DaysLeft => Days - (ParcelCounter / ParcelsPerDay);

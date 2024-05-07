@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppBackend", "WebAppBack
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsGenerator", "EventsGenerator\EventsGenerator.csproj", "{2457BE4D-6F56-46BB-8613-B57A3C1CB35F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Observability.Conventions", "Observability.Conventions\Observability.Conventions.csproj", "{CF8BFB0E-52FD-45B4-B2B0-91CE638DF973}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2457BE4D-6F56-46BB-8613-B57A3C1CB35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2457BE4D-6F56-46BB-8613-B57A3C1CB35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2457BE4D-6F56-46BB-8613-B57A3C1CB35F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF8BFB0E-52FD-45B4-B2B0-91CE638DF973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF8BFB0E-52FD-45B4-B2B0-91CE638DF973}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF8BFB0E-52FD-45B4-B2B0-91CE638DF973}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF8BFB0E-52FD-45B4-B2B0-91CE638DF973}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

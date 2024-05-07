@@ -2,7 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "suffix": {"type": "string"}
+        "suffix": {"type": "string"},
+        "otelProtocol": {"type": "string"},
+        "otelEndpoint": {"type": "string"},
+        "otelHeaders": {"type": "securestring"}
     },
     "variables": {
         "transportsTableName": "transports",
@@ -175,6 +178,18 @@
                         {
                             "name": "EventHubConnectionString",
                             "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('eventsListenerAuthorizationRule')), '2017-04-01').primaryConnectionString]"
+                        },
+                        {
+                            "name": "OTEL_EXPORTER_OTLP_PROTOCOL",
+                            "value": "[parameters('otelProtocol')]"
+                        },
+                        {
+                            "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                            "value": "[parameters('otelEndpoint')]"
+                        },
+                        {
+                            "name": "OTEL_EXPORTER_OTLP_HEADERS",
+                            "value": "[parameters('otelHeaders')]"
                         }
                     ]
                 }
