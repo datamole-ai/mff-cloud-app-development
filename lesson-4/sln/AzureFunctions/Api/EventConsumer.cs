@@ -41,6 +41,9 @@ public class EventConsumer(TransportsRepository transportsRepository, ILogger<Ev
             }
         });
         
+        Instrumentation.ProcessedEventsCounter.Add(events.Length);
+        Instrumentation.EventConsumerInvocationsCounter.Add(1);
+        
         logger.LogInformation("Batch of {length} events processed.", events.Length);
     }
 }
