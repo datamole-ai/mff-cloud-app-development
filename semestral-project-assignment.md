@@ -75,7 +75,7 @@ The Service Support Application Team has good skills in enterprise integration a
 
 ### Observability
 
-Choose 3 metric types (counter, upDownCounter, counterAsync, upDownCounterAsync, gauge, histogram) and define metrics that would enhance the observability of the system. The definition should include Name, Kind, Description and Unit (if applicable).
+Choose 3 metric types (counter, upDownCounter, counterAsync, upDownCounterAsync, gauge, histogram) and define metrics that would enhance the observability of the system. The definition should include Name, Kind, Description, Unit (if applicable), and labels (dimensions).
 
 Choose one endpoint of the web application and describe the trace of a request. Draw a simple flame graph. Provide a sample JSON representation of each span, containing all required information to build the trace. Include a few attributes you find valuable to capture (you don't need to include every attribute that is recommended by OpenTelemetry).
 
