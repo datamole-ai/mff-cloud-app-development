@@ -4,7 +4,7 @@ namespace AzureFunctions.Services;
 
 public class AggregationService(TransportsRepository transportsRepository, StatisticsCacheRepository statisticsCacheRepository)
 {
-    public async Task<DayStatistics> GetDayStatisticsAsync(DateOnly date, CancellationToken cancellationToken)
+    public async Task<DayStatistics?> GetDayStatisticsAsync(DateOnly date, CancellationToken cancellationToken)
     {
         var statistics = await statisticsCacheRepository.FindStatisticsAsync(date, cancellationToken);    
         
@@ -32,6 +32,6 @@ public class AggregationService(TransportsRepository transportsRepository, Stati
             await statisticsCacheRepository.SaveStatisticsAsync(computedStatistics, cancellationToken);
         }
 
-        return computedStatistics ?? new DayStatistics(date, 0, double.NaN);
+        return computedStatistics;
     }
 }
