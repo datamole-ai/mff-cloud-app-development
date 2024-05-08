@@ -2,8 +2,8 @@
 
 # Case study problem statement
 
-The client wants to detect problems with the devices in the sorting facilities.
-So they want us to deploy a real-time anomaly detection algorithm on the data sent from the devices.
+The client wants to detect problems with sorting robots.
+They want us to deploy a real-time anomaly detection algorithm on the data sent from the devices.
 
 The client is not happy that the endpoint for daily statistics takes so long.
 We agreed to implement a caching mechanism to ensure that only the initial query is slow.

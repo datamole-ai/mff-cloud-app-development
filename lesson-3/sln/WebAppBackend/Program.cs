@@ -68,10 +68,12 @@ app.MapGet("/daily-statistics",
             {
                 return Results.BadRequest();
             }
-
-            return Results.Ok(await reporterClient.GetDailyStatistics(date));
+            
+            var statistics = await reporterClient.GetDailyStatistics(date);
+            
+            return statistics is null ? Results.NoContent() : Results.Ok(statistics);
         })
-    .WithName("GetTransport")
+    .WithName("GetStatistics")
     .WithOpenApi();
 
 
