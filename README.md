@@ -71,7 +71,7 @@ The documents and diagrams representing the solution should be stored in **priva
 * Add `Read` permissions on the repository to the following GitHub users:
   * Tomáš Pajurek ([tomas-pajurek](https://github.com/tomas-pajurek))
   * David Nepožitek ([DavidNepozitek](https://github.com/DavidNepozitek))
-* Send email to `mff-nswi152@datamole.ai`.
+* Send email to `mff-nswi152@spotflow.io`.
 
 This process will enable smooth delivery of feedback via comments.
 
