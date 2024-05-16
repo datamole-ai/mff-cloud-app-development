@@ -34,6 +34,7 @@ There will be 5 lessons and one semestral project in total. First four lessons w
 * **Lesson 4** (16. 05. 2024)
   * Observability, OpenTelemetry, Instrumentation and Troubleshooting of Cloud Services.
   * Case study (continued - observability).
+  * For more details visit [lesson-4](./lesson-4/README.md).
   * Semestral project assignment. For more details visit [semestral-project-assignment.md](./semestral-project-assignment.md).
 
 * **Lesson 5** (23. 05. 2024)
