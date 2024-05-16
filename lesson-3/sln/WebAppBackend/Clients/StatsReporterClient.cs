@@ -1,3 +1,5 @@
+using System.Net;
+
 using WebAppBackend.Models;
 
 namespace WebAppBackend.Clients;
@@ -20,9 +22,14 @@ public class StatsReporterClient(IHttpClientFactory httpClientFactory)
         return null;
     }
     
-    public async Task<DayStatistics> GetDailyStatistics(DateOnly date)
+    public async Task<DayStatistics?> GetDailyStatistics(DateOnly date)
     {
         var response = await httpClient.GetAsync($"api/GetDailyStatistics?date={date:yyyy-MM-dd}");
+
+        if (response.StatusCode == HttpStatusCode.NoContent)
+        {
+            return null;
+        }
 
         return await response.Content.ReadFromJsonAsync<DayStatistics>() ?? new DayStatistics(date, 0, double.NaN);
     }

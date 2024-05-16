@@ -18,7 +18,7 @@ Design an system/solution architecture of a cloud system for collecting logs fro
 * Discuss your solution's limits and trade-offs.
 * The specific configuration options of individual Azure services does not have to be discussed (but details are of course very welcomed).
 * Use any drawing tool and text format you are comfortable with to capture the resulting architecture.
-    * We recommend https://diagrams.net and Markdown files.
+    * We recommend https://excalidraw.com/ or https://diagrams.net and Markdown files.
 * For all diagrams, make sure to also provide textual descriptions for data flows, dependencies, data schemas, assumptions, etc.
 
 ## Scenario
@@ -72,6 +72,12 @@ The Cloud Platform Team is well versed in C#, Golang and most Azure services. Th
 The anomaly detection algorithm is developed by the Machine Learning Engineering Team using Python and Scikit-learn library. The anomaly detection algorithm is stateful and requires that all log dumps from a single device are processed in-order. It is not required to deal with the machine learning aspects of the algorithm. However, you need to provide guidance how to integrate it into the whole system. How the algorithm will be triggered? Where it will be running? How the state will be retrieved and persisted? Will the state be cached in memory?  
 
 The Service Support Application Team has good skills in enterprise integration and application development but they lack knowledge of cloud and big data streaming architectures. Provide them with suitable data sources/APIs and guidance on how to run their app.
+
+### Observability
+
+Choose 3 metric types (counter, upDownCounter, async counter, async upDownCounter, gauge, histogram) and define metrics that would enhance the observability of the system. The definition should include Name, Kind, Description, and Unit (if applicable).
+
+Choose one endpoint of the web application and describe the trace of a request. Draw a simple flame graph. Provide a sample JSON representation of each span, containing all required information to build the trace. Include a few attributes you find valuable to capture (you don't need to include every attribute that is recommended by OpenTelemetry).
 
 ## Constraints
 

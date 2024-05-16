@@ -15,8 +15,9 @@ namespace AzureFunctions.Api;
 public class EventConsumer(TransportsRepository transportsRepository, ILogger<EventConsumer> logger)
 {
     [Function("EventConsumer")]
+    [ExponentialBackoffRetry(-1, "00:00:01", "00:05:00")]
     public async Task Run(
-        [EventHubTrigger("transports", Connection = "EventHubConnectionString")] EventData[] events, CancellationToken cancellationToken)
+        [EventHubTrigger("transportsv2", Connection = "EventHubConnectionString")] EventData[] events, CancellationToken cancellationToken)
     {
         await Parallel.ForEachAsync(events, new ParallelOptions()
         {

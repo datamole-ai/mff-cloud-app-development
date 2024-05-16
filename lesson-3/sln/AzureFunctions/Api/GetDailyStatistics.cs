@@ -18,7 +18,9 @@ public class GetDailyStatistics(AggregationService aggregationService)
         {
             return new BadRequestResult();
         }
-
-        return new OkObjectResult(await aggregationService.GetDayStatisticsAsync(date, cancellationToken));
+        
+        var statistics = await aggregationService.GetDayStatisticsAsync(date, cancellationToken);
+        
+        return statistics is null ? new NoContentResult() :  new OkObjectResult(statistics);
     }
 }
