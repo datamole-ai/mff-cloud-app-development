@@ -1,9 +1,92 @@
 # Lesson 3
 
+# Asynchronous communication & messaging
+
+| Contact                   | Synchronous communication             | Asynchronous communication             |
+| ------------------------- | ------------------------------------- | -------------------------------------- |
+| Human-to-human (physical) | Speaking to other person directly.    | Sending an letter.                     |
+| Human-to-human (digital)  | Making a phone call.                  | Sending an email, sms or document.     |
+| Cooperation               | Multiple people sitting in a meeting. | Create and review Merge/Pull requests. |
+| Machine-to-machine        | Method call, HTTP request.            | Messaging via queues.                  |
+
+## Asynchronous communication - pros and cons
+
+| Pros                                                         | Cons                                              |
+| ------------------------------------------------------------ | ------------------------------------------------- |
+| Improves scalability.                                        | More difficult to implement correctly.            |
+| Improves reliability.                                        | Requires external infrastructure (in most cases). |
+| Simple load balancing.                                       | Latency might suffer.                             |
+| Might help reducing architectural complexity via decoupling. |                                                   |
+
+## Messaging patterns
+
+### Point-to-Point
+
+![Publish/Subscribe](./imgs/point-to-point.png)
+
+### Publish/Subscribe
+
+![Publish/Subscribe](./imgs/publish-subscribe.png)
+
+### Competing Consumers
+
+![Competing Consumers](./imgs/competing-consumers.png)
+
+## Message queues
+
+### Traditional message brokers
+
+![Traditional message brokers](./imgs/traditional-message-brokers.png)
+
+### Log-based queues
+
+![RLog-based queues](./imgs/log-based-queues.png)
+
+
+# Overview of relevant Azure resources
+
+## Azure Service Bus
+
+Traditional message broker. It supports:
+
+* **Queues** (point-to-point, competing consumers)
+* **Topics** (publish/subscribe)
+  * **Subscriptions** (competing consumers)
+* Time-to-live (TTL) configurable per message.
+* Filtering.
+* Auto-Forwarding.
+* Dead-lettering.
+* Sessions.
+* Transactions.
+* Auto-delete.
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/service-bus-messaging/
+
+## Azure Event Hub
+
+Log-based queue:
+
+* Does not provide built-in support for checkpointing (checkpoints are typically stored in Blobs or Tables).
+* Time-to-live is configurable on the level of the Event Hub, not individual events.
+* No routing features similar to Service Bus.
+* Only batch inserts are transactional.
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/event-hubs/
+
+## Azure Functions with Event Hub trigger
+
+Functions are invoked with a batch of messages from a single Event Hub partition. At most one batch from a single partition is processed at a time.
+
+Target-based scaling: https://learn.microsoft.com/en-us/azure/azure-functions/functions-target-based-scaling?tabs=v5%2Ccsharp
+
+![Target-based scaling](./imgs/target-based-scaling-formula.png)
+
+Azure Docs: https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-event-hubs
+
 # Case study problem statement
 
-The client wants to detect problems with the devices in the sorting facilities.
-So they want us to deploy a real-time anomaly detection algorithm on the data sent from the devices.
+The client wants to detect problems with sorting robots.
+They want us to deploy a real-time anomaly detection algorithm on the data sent from the devices.
 
 The client is not happy that the endpoint for daily statistics takes so long.
 We agreed to implement a caching mechanism to ensure that only the initial query is slow.
@@ -13,8 +96,8 @@ We agreed to implement a caching mechanism to ensure that only the initial query
 - Modify the architecture so that the anomaly detection algorithm can process the data alongside our event consumer (the one which stores the data).
 - Implement a caching mechanism for the daily statistics query.
 
-
 ## The Original Designs
+
 ![Design](./imgs/diagram_1.png)
 
 ![Design](./imgs/diagram_2.png)
@@ -24,7 +107,6 @@ We agreed to implement a caching mechanism to ensure that only the initial query
 ## The Final Architecture
 
 ![Design](./imgs/diagram_3.png)
-
 
 ## Components
 
@@ -42,7 +124,6 @@ We agreed to implement a caching mechanism to ensure that only the initial query
 - **Consumer Groups**
   - One for the Event Consumer which stores the data
   - One for the Anomaly Detection algorithm
-
 
 ## Implementation
 
@@ -145,7 +226,7 @@ az webapp deploy --src-path deploy.zip -n <web-app-name> --resource-group <resou
 
 ### Send Events to the Consumer Function
 
-The `EventsGenerator` projects generates and sends events for the past few days. 
+The `EventsGenerator` projects generates and sends events for the past few days.
 
 To generate the events run the project:
 
@@ -170,6 +251,7 @@ cUrl
 ```sh
 curl "<webapp-uri>/transports?date=2024-04-05&facilityId=prague&parcelId=123"
 ```
+
 #### Daily Statistics
 
 Powershell
