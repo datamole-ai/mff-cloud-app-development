@@ -21,11 +21,11 @@ public class EventConsumer(TransportsRepository transportsRepository, ILogger<Ev
     {
         using var activity = Instrumentation.ActivitySource.StartActivity("Process Transports Batch");
         
-        activity?.AddTag("mff_iot.batch_size", events.Length);
-        activity?.AddTag("mff_iot.partition_id", partitionContext.PartitionId);
-        activity?.AddTag("mff_iot.eh_namespace", partitionContext.FullyQualifiedNamespace);
-        activity?.AddTag("mff_iot.first_seq_number", events[0].SequenceNumber);
-        activity?.AddTag("mff_iot.last_seq_number", events[^1].SequenceNumber);
+        activity?.AddTag(Instrumentation.AttributeBatchSize, events.Length);
+        activity?.AddTag(Instrumentation.AttributePartitionId, partitionContext.PartitionId);
+        activity?.AddTag(Instrumentation.AttributeEventHubNamespace, partitionContext.FullyQualifiedNamespace);
+        activity?.AddTag(Instrumentation.AttributeFirstSequenceNumber, events[0].SequenceNumber);
+        activity?.AddTag(Instrumentation.AttributeLastSequenceNumber, events[^1].SequenceNumber);
         
         var startTime = Stopwatch.GetTimestamp();
         

@@ -31,7 +31,13 @@ public static class Instrumentation
     }
     
     
-    public const string MetricNameProcessedEventsCount = "mffiot.processed_events_count";
-    public const string MetricNameInvocationsCount = "mffiot.invocations_count";
-    public const string MetricNameBatchProcessingDuration = "mffiot.batch_processing_duration";
+    private const string MetricNameProcessedEventsCount = "mffiot.processed_events_count";
+    private const string MetricNameInvocationsCount = "mffiot.invocations_count";
+    private const string MetricNameBatchProcessingDuration = "mffiot.batch_processing_duration";
+    
+    public const string AttributeBatchSize = "mff_iot.batch_size";
+    public const string AttributePartitionId = "mff_iot.partition_id";
+    public const string AttributeEventHubNamespace = "mff_iot.eh_namespace";
+    public const string AttributeFirstSequenceNumber = "mff_iot.first_seq_number";
+    public const string AttributeLastSequenceNumber = "mff_iot.last_seq_number";
 }
