@@ -18,6 +18,8 @@ public class TransportsRepository
 
     public async Task SaveTransportAsync(Transport transport, CancellationToken cancellationToken)
     {
+        using var activity = Instrumentation.ActivitySource.StartActivity();
+        
         var transportEntity = TransportEntity.FromDomainModel(transport);
 
         await _tableClient.UpsertEntityAsync(transportEntity, TableUpdateMode.Replace, cancellationToken);
@@ -25,6 +27,8 @@ public class TransportsRepository
 
     public async Task<Transport?> FindTransportAsync(DateOnly date, string facilityId, string parcelId, CancellationToken cancellationToken)
     {
+        using var activity = Instrumentation.ActivitySource.StartActivity();
+        
         try
         {
             var entity = await _tableClient.GetEntityAsync<TransportEntity>(partitionKey: TransportEntity.GeneratePartitionKey(date, facilityId), rowKey: parcelId,

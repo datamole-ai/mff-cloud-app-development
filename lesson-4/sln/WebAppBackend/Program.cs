@@ -1,5 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+using WebAppBackend;
 using WebAppBackend.Clients;
 
 using Transport = WebAppBackend.Models.Transport;
@@ -20,6 +26,40 @@ builder.Services.AddHttpClient(StatsReporterClient.HttpClientName, client =>
                              ?? throw new InvalidOperationException("FunctionHostKey is not configured"));
 });
 builder.Services.AddSingleton<DeviceDirectoryClientMock>();
+
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.AddOtlpExporter();
+    options.IncludeFormattedMessage = true;
+});
+
+AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
+
+builder.Services.AddOpenTelemetry()
+        .ConfigureResource(resourceBuilder =>
+        {
+            resourceBuilder.AddService("WebAppBackend");
+        })
+        .WithMetrics(meterProviderBuilder =>
+        {
+            meterProviderBuilder.AddMeter("*");
+            meterProviderBuilder.AddOtlpExporter((_, readerOptions) =>
+            {
+                readerOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5_000;
+            });
+            
+        })
+        .WithTracing(tracerProviderBuilder =>
+        {
+            tracerProviderBuilder
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation();
+            
+            tracerProviderBuilder.AddSource("Azure.*", Instrumentation.ActivitySourceName);
+            tracerProviderBuilder.SetSampler(new AlwaysOnSampler());
+            tracerProviderBuilder.AddOtlpExporter(options => options.BatchExportProcessorOptions.ScheduledDelayMilliseconds = 1_000);
+        });
+
 
 var app = builder.Build();
 
@@ -69,9 +109,11 @@ app.MapGet("/daily-statistics",
                 return Results.BadRequest();
             }
 
-            return Results.Ok(await reporterClient.GetDailyStatistics(date));
+            var statistics = await reporterClient.GetDailyStatistics(date);
+            
+            return statistics is null ? Results.NoContent() : Results.Ok(statistics);
         })
-    .WithName("GetTransport")
+    .WithName("GetDailyStatistics")
     .WithOpenApi();
 
 

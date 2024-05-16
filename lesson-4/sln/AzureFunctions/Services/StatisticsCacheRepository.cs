@@ -16,8 +16,10 @@ public class StatisticsCacheRepository
         _tableClient = new(storageConnectionString, "statisticsCache");
     }
     
-    public async Task SaveStatisticsAsync(DayStatistics dayStatistics, CancellationToken cancellationToken)
+    public async Task SaveStatisticsToCacheAsync(DayStatistics dayStatistics, CancellationToken cancellationToken)
     {
+        using var activity = Instrumentation.ActivitySource.StartActivity();
+        
         var statisticsEntity = DayStatisticsCacheEntity.FromDomainModel(dayStatistics);
 
         await _tableClient.UpsertEntityAsync(statisticsEntity, TableUpdateMode.Replace, cancellationToken);
