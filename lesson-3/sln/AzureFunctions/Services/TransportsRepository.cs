@@ -13,7 +13,7 @@ public class TransportsRepository
     {
         var storageConnectionString = Environment.GetEnvironmentVariable("TransportsStorageConnectionsString");
 
-        _tableClient = new(storageConnectionString, "transports");
+        _tableClient = new(storageConnectionString, "transportsv2");
     }
 
     public async Task SaveTransportAsync(Transport transport, CancellationToken cancellationToken)
