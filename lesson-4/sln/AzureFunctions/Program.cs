@@ -1,3 +1,4 @@
+using AzureFunctions;
 using AzureFunctions.Services;
 
 using Microsoft.Azure.Functions.Worker.OpenTelemetry;
@@ -12,15 +13,21 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
 var hostBuilder = new HostBuilder()
-    .ConfigureFunctionsWebApplication();
+    .ConfigureFunctionsWebApplication((_, functionsWorkerApplicationBuilder) =>
+    {
+        functionsWorkerApplicationBuilder.UseMiddleware<ActivityTrackingMiddleware>();
+    });
 
 
 hostBuilder.ConfigureLogging(loggingBuilder => 
     loggingBuilder.AddOpenTelemetry(options =>
     {
         options.AddOtlpExporter();
+        options.IncludeFormattedMessage = true;
     })
 );
+
+AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
 
 hostBuilder.ConfigureServices((_, services) =>
 {
@@ -43,8 +50,8 @@ hostBuilder.ConfigureServices((_, services) =>
         .WithTracing(tracerProviderBuilder =>
         {
             
-            tracerProviderBuilder.AddSource("*");
-
+            tracerProviderBuilder.AddSource("Azure.*", ActivityTrackingMiddleware.ActivitySourceName, Instrumentation.ActivitySourceName);
+            tracerProviderBuilder.SetSampler(new AlwaysOnSampler());
             tracerProviderBuilder.AddConsoleExporter();
             tracerProviderBuilder.AddOtlpExporter(options => options.BatchExportProcessorOptions.ScheduledDelayMilliseconds = 1_000);
         });

@@ -227,6 +227,18 @@
                         {
                             "name": "StatsReporter__FunctionHostUrl",
                             "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('functionAppName'))).defaultHostName)]"
+                        },
+                        {
+                            "name": "OTEL_EXPORTER_OTLP_PROTOCOL",
+                            "value": "[parameters('otelProtocol')]"
+                        },
+                        {
+                            "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                            "value": "[parameters('otelEndpoint')]"
+                        },
+                        {
+                            "name": "OTEL_EXPORTER_OTLP_HEADERS",
+                            "value": "[parameters('otelHeaders')]"
                         }
                     ]
                 }
