@@ -20,7 +20,7 @@ There will be 5 lessons and one semestral project in total. First four lessons w
   * For more details visit [lesson-1](./lesson-1/README.md).
 
 * **Lesson 2** (02. 05. 2024)
-  * Horizontal vs. vertical scalibity.
+  * Horizontal vs. vertical scalability.
   * Partitioning & replication. 
   * Types, scalability and economic aspects of various storages.
   * Overview of relevant Azure resources - Storage (Tables, Blobs), App Service.
